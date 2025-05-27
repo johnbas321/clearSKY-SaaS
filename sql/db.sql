@@ -14,7 +14,6 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     role ENUM('student', 'instructor', 'admin') NOT NULL,
-    google_id VARCHAR(255) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (institution_id) REFERENCES institutions(id) ON DELETE CASCADE
 );
@@ -22,7 +21,7 @@ CREATE TABLE users (
 CREATE TABLE courses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    code VARCHAR(50) NOT NULL,
+    code VARCHAR(8) NOT NULL,
     instructor_id INT,
     institution_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -42,10 +41,10 @@ CREATE TABLE enrollments (
 CREATE TABLE grades (
     id INT AUTO_INCREMENT PRIMARY KEY,
     enrollment_id INT,
-    initial_grade DECIMAL(5,2),
-    final_grade DECIMAL(5,2),
-    posted_at TIMESTAMP NULL,
-    updated_at TIMESTAMP NULL,
+    initial_grade INT,
+    final_grade INT,
+    CHECK (initial_grade > 0 AND initial_grade <= 10),
+    CHECK (final_grade > 0 AND final_grade <= 10),
     FOREIGN KEY (enrollment_id) REFERENCES enrollments(id) ON DELETE CASCADE
 );
 
@@ -60,19 +59,10 @@ CREATE TABLE review_requests (
     FOREIGN KEY (enrollment_id) REFERENCES enrollments(id) ON DELETE CASCADE
 );
 
-CREATE TABLE credit_purchases (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    institution_id INT,
-    amount INT NOT NULL,
-    purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (institution_id) REFERENCES institutions(id) ON DELETE CASCADE
-);
-
 CREATE TABLE user_logins (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    method ENUM('google') NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
