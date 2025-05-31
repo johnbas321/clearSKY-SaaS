@@ -4,12 +4,15 @@
     "main": "src/app.js",
     "type": "module",
     "scripts": {
-        "start": "node src/app.js"
+        "start": "node app.js"
     },
     "dependencies": {
+        "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "express": "^5.1.0",
         "multer": "^2.0.0",
+        "mysql2": "^3.14.1",
+        "redis": "^5.1.1",
         "xlsx": "^0.18.5"
     }
 }

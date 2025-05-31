@@ -1,12 +1,8 @@
 import { createClient } from 'redis';
 
-const client = createClient({ url: "redis://redis:6379" });
+export const client = createClient({ url: 'redis://localhost:6379' });
 
 client.on("error", (err) => console.error("Redis error:", err));
 
-(async () => {
-  await client.connect();
-  console.log("Connected to Redis");
-})();
-
-module.exports = client;
+await client.connect();
+console.log("Connected to Redis");

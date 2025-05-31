@@ -1,9 +1,11 @@
-import client from './redisClient.js';
+import { client } from '../utils/redisClient.js';
 
 export async function validateToken(req, res, next) {
   try {
+    console.log(req.cookies)
     const sessionId = req.cookies.sessionId;
-
+    console.log(sessionId);
+    console.log('fasdfasfasdfasfasdf')
     if (!sessionId) {
       return res.status(401).json({ error: "Missing session token" });
     }

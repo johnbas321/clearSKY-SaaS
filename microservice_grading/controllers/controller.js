@@ -3,7 +3,7 @@ import { db } from '../utils/database.js'
 import xlsx from 'xlsx';
 
 
-export default async function uploadInitialGrades(req, res, next){
+export async function uploadInitialGrades(req, res, next){
   try{
     if (req.user.role !== 'instructor') {
       return res.status(403).json({error: 'Only instructors can upload grades'});
@@ -30,15 +30,14 @@ export default async function uploadInitialGrades(req, res, next){
     }
 
     const insertValues = grades.map(g => [
-      courseId,
+      g.id,
       g.studentId,
+      courseId,
       g.grade,
-      req.user.userId,
-      new Date()
     ]);
 
     await db.query(
-      'INSERT INTO grades (course_id, student_id, grade, uploaded_by, uploaded_at) VALUES ?',
+      'INSERT INTO grades (student_id, course_id, grade) VALUES ?',
       [insertValues]
     );
 
@@ -53,7 +52,7 @@ export default async function uploadInitialGrades(req, res, next){
     }
   }
 
-  export default async function uploadFinalGrades(req, res, next) {
+  export async function uploadFinalGrades(req, res, next) {
     try {
       if (req.user.role !== 'instructor') {
         return res.status(403).json({ error: 'Only instructors can upload final grades' });
@@ -87,17 +86,15 @@ export default async function uploadInitialGrades(req, res, next){
         [courseId]
       );
   
-      // ✅ Insert final grades
+      // Insert final grades
       const insertValues = grades.map(g => [
-        courseId,
         g.studentId,
+        courseId,
         g.grade,
-        req.user.userId,
-        new Date()
       ]);
   
       await db.query(
-        'INSERT INTO grades (course_id, student_id, grade, uploaded_by, uploaded_at) VALUES ?',
+        'INSERT INTO grades (student_id, course_id, grade) VALUES ?',
         [insertValues]
       );
   
@@ -113,7 +110,7 @@ export default async function uploadInitialGrades(req, res, next){
     }
   }
   
-  export default async function viewStudentGrades(req, res, next) {
+  export async function viewStudentGrades(req, res, next) {
     try {
       if (req.user.role !== 'student') {
         return res.status(403).json({ error: 'Only students can view their grades' });
@@ -138,7 +135,7 @@ export default async function uploadInitialGrades(req, res, next){
     }
   }
 
-  export default async function enrollInCourse(req, res, next) {
+  export async function enrollInCourse(req, res, next) {
     try {
       if (req.user.role !== 'student') {
         return res.status(403).json({ error: 'Only students can enroll in courses' });
@@ -159,7 +156,7 @@ export default async function uploadInitialGrades(req, res, next){
     }
   }
 
-  export default async function dropCourse(req, res, next) {
+  export async function dropCourse(req, res, next) {
     try {
       if (req.user.role !== 'student') {
         return res.status(403).json({ error: 'Only students can drop courses' });
@@ -168,9 +165,84 @@ export default async function uploadInitialGrades(req, res, next){
       const courseId = req.params.id;
       const studentId = req.user.userId;
 
+      const [result] = await db.query(
+        'DELETE FROM enrollments WHERE course_id = ? AND student_id = ?',
+        [courseId, studentId]
+      );
+
       res.json({ message: 'Unenrolled successfully', courseId });
   
     } catch (err) {
+      next(err);
+    }
+  }
+
+  export async function createCourse(req, res, next){
+    try{
+      if (req.user.role !== 'instructor'){
+        return res.status(403).json({ error: 'Only instructors can upload final grades' });
+      }
+      const courseName = req.params.courseName;
+      const startDate = req.params.startDate;
+      const endDate = req.params.endDate;
+      const instructor_id = req.user.userId;
+
+      await db.query(
+        'INSERT INTO courses (course_name, startDate, endDate, instructor_id, grade_state) VALUES (? ? ? ?)',
+        [courseName, startDate, endDate, instructor_id, "VOID"]
+      );
+
+      res.status(201).json({ message: 'Course created successfully', courseName });
+
+    }catch(err){
+      next(err);
+    }
+  }
+
+  export async function deleteCourse(req, res, next){
+    try{
+      if (req.user.role !== 'instructor'){
+        return res.status(403).json({ error: 'Only instructors can delete a course.' });
+      }
+
+      const courseId = req.params.courseId;
+      const instructor_id = req.user.userId;
+
+      const [courseRows] = await db.query(
+        'SELECT * FROM courses WHERE id = ? AND instructor_id = ? AND grade_state = ?',
+        [courseId, instructor_id, 'VOID']
+      );
+  
+      if (courseRows.length === 0) {
+        return res.status(404).json({ error: 'Only courses with a VOID state can be deleted by the same instructor'});
+      }
+
+      await db.query(
+        'DELETE FROM courses WHERE id = ?',
+        [courseId]
+      );
+
+      res.status(201).json({ message: 'Course removed successfully', courseId });
+
+
+    }catch(err){
+      next(err);
+    }
+  }
+
+
+  export async function healthCheck(req, res, next){
+    try{
+      res.json({message: 'healthy'});
+    } catch (err){
+      next(err);
+    }
+  }
+
+  export async function testAPI(req, res, next){
+    try{
+      res.json({message: 'All Good'});
+    } catch (err){
       next(err);
     }
   }

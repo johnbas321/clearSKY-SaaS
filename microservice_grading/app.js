@@ -1,15 +1,18 @@
 import express from 'express';
 import cors from 'cors';
-import gradesRouter from './routes/grades.js';
+import router from './routes/routes.js';
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
-const PORT = 3002;
+const PORT = 5500;
 
+//app.use(cookieParser);
 app.use(cors());
+
+app.use(router);
 app.use(express.json());
 
-app.use('/grades', gradesRouter);
 
 app.listen(PORT, () => {
   console.log(`Grading service running on port ${PORT}`);
