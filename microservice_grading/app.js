@@ -7,13 +7,16 @@ import { errorHandler } from './middlewares/errorHandler.js';
 const app = express();
 const PORT = 5500;
 
-//app.use(cookieParser);
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5500',
+  credentials: true}));
 
-app.use(router);
+app.use(cookieParser());
 app.use(express.json());
 
+app.use(router);
+app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT ,() => {
   console.log(`Grading service running on port ${PORT}`);
 });
