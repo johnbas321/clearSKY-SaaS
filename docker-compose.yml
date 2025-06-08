@@ -39,7 +39,8 @@ services:
     ports:
       - "3005:3005"
     depends_on:
-      - userman-db
+      userman-db:
+        condition: service_healthy
     environment:
       - NODE_ENV=production
       - DB_HOST=userman-db
@@ -50,6 +51,7 @@ services:
       - PORT=3005
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Grading Service
   grading:
@@ -58,7 +60,8 @@ services:
     ports:
       - "3002:3002"
     depends_on:
-      - grading-db
+      grading-db:
+        condition: service_healthy
     environment:
       - NODE_ENV=production
       - DB_HOST=grading-db
@@ -77,7 +80,8 @@ services:
     ports:
       - "3003:3003"
     depends_on:
-      - review-db
+      review-db:
+        condition: service_healthy
     environment:
       - NODE_ENV=production
       - DB_HOST=review-db
@@ -96,7 +100,8 @@ services:
     ports:
       - "3004:3004"
     depends_on:
-      - stats-db
+      stats-db:
+        condition: service_healthy
     environment:
       - NODE_ENV=production
       - DB_HOST=stats-db
@@ -118,6 +123,7 @@ services:
       - redis-data:/data
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Database for User Management Service
   userman-db:
@@ -132,8 +138,16 @@ services:
       - MYSQL_PASSWORD=password
     volumes:
       - userman-db-data:/var/lib/mysql
+      - ./microservice_userman/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     networks:
       - clearsky-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
 
   # Database for Grading Service
   grading-db:
@@ -150,6 +164,13 @@ services:
       - grading-db-data:/var/lib/mysql
     networks:
       - clearsky-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
 
   # Database for Review Service
   review-db:
@@ -166,6 +187,13 @@ services:
       - review-db-data:/var/lib/mysql
     networks:
       - clearsky-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
 
   # Database for Statistics Service
   stats-db:
@@ -182,6 +210,13 @@ services:
       - stats-db-data:/var/lib/mysql
     networks:
       - clearsky-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
 
 networks:
   clearsky-network:
