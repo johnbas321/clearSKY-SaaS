@@ -3,13 +3,13 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
-RUN rm -rf ./*
+# RUN rm -rf ./*
 
 # Copy static assets
-COPY . .
+COPY public /usr/share/nginx/html
 
 # Copy custom nginx configuration if needed
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80

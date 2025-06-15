@@ -1,4 +1,20 @@
+
 services:
+  # Frontend Service
+  frontend:
+    build: ./microservice_front
+    container_name: clearsky-frontend
+    ports:
+      - "80:80"
+    # depends_on:
+    #   - auth
+    #   - userman
+    #   - grading
+    #   - review
+    #   - stats
+    networks:
+      - clearsky-network
+
   # Auth Service
   auth:
     build: ./microservice_auth
@@ -36,42 +52,170 @@ services:
       - clearsky-network
     restart: unless-stopped
 
+  # Grading Service
+  # grading:
+  #   build: ./microservice_grading
+  #   container_name: clearsky-grading
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     grading-db:
+  #       condition: service_healthy
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DB_HOST=grading-db
+  #     - DB_PORT=3306
+  #     - DB_USER=clearsky
+  #     - DB_PASSWORD=password
+  #     - DB_NAME=grading
+  #     - PORT=3002
+  #   networks:
+  #     - clearsky-network
+
+  # Review Service
+  # review:
+  #   build: ./microservice_review
+  #   container_name: clearsky-review
+  #   ports:
+  #     - "3003:3003"
+  #   depends_on:
+  #     review-db:
+  #       condition: service_healthy
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DB_HOST=review-db
+  #     - DB_PORT=3306
+  #     - DB_USER=clearsky
+  #     - DB_PASSWORD=password
+  #     - DB_NAME=review
+  #     - PORT=3003
+  #   networks:
+  #     - clearsky-network
+
+  # Statistics Service
+  # stats:
+  #   build: ./microservice_stats
+  #   container_name: clearsky-stats
+  #   ports:
+  #     - "3004:3004"
+  #   depends_on:
+  #     stats-db:
+  #       condition: service_healthy
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DB_HOST=stats-db
+  #     - DB_PORT=3306
+  #     - DB_USER=clearsky
+  #     - DB_PASSWORD=password
+  #     - DB_NAME=stats
+  #     - PORT=3004
+  #   networks:
+  #     - clearsky-network
 
   # Redis for Auth Service
-  redis:
-    image: redis:alpine
-    container_name: clearsky-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - clearsky-network
-    restart: unless-stopped
+  # redis:
+  #   image: redis:alpine
+  #   container_name: clearsky-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
 
   # Database for User Management Service
-  userman-db:
-    image: mysql:8.0
-    container_name: clearsky-userman-db
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=userman
-      - MYSQL_USER=clearsky
-      - MYSQL_PASSWORD=password
-    volumes:
-      - userman-db-data:/var/lib/mysql
-      - ./microservice_userman/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
-    networks:
-      - clearsky-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
-      timeout: 20s
-      retries: 10
-      interval: 10s
-      start_period: 30s
+  # userman-db:
+  #   image: mysql:8.0
+  #   container_name: clearsky-userman-db
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpassword
+  #     - MYSQL_DATABASE=userman
+  #     - MYSQL_USER=clearsky
+  #     - MYSQL_PASSWORD=password
+  #   volumes:
+  #     - userman-db-data:/var/lib/mysql
+  #     - ./microservice_userman/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+  #     timeout: 20s
+  #     retries: 10
+  #     interval: 10s
+  #     start_period: 30s
+
+  # Database for Grading Service
+  # grading-db:
+  #   image: mysql:8.0
+  #   container_name: clearsky-grading-db
+  #   ports:
+  #     - "3307:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpassword
+  #     - MYSQL_DATABASE=grading
+  #     - MYSQL_USER=clearsky
+  #     - MYSQL_PASSWORD=password
+  #   volumes:
+  #     - grading-db-data:/var/lib/mysql
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+  #     timeout: 20s
+  #     retries: 10
+  #     interval: 10s
+  #     start_period: 30s
+
+  # Database for Review Service
+  # review-db:
+  #   image: mysql:8.0
+  #   container_name: clearsky-review-db
+  #   ports:
+  #     - "3308:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpassword
+  #     - MYSQL_DATABASE=review
+  #     - MYSQL_USER=clearsky
+  #     - MYSQL_PASSWORD=password
+  #   volumes:
+  #     - review-db-data:/var/lib/mysql
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+  #     timeout: 20s
+  #     retries: 10
+  #     interval: 10s
+  #     start_period: 30s
+
+  # Database for Statistics Service
+  # stats-db:
+  #   image: mysql:8.0
+  #   container_name: clearsky-stats-db
+  #   ports:
+  #     - "3309:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpassword
+  #     - MYSQL_DATABASE=stats
+  #     - MYSQL_USER=clearsky
+  #     - MYSQL_PASSWORD=password
+  #   volumes:
+  #     - stats-db-data:/var/lib/mysql
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+  #     timeout: 20s
+  #     retries: 10
+  #     interval: 10s
+  #     start_period: 30s
 
 networks:
   clearsky-network:
