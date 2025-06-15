@@ -1,4 +1,8 @@
 import { executeQuery } from '../config/database.js';
+import crypto from 'crypto';
+import util from 'util';
+
+const scrypt = util.promisify(crypto.scrypt);
 
 export class User {
   constructor(data = {}) {
@@ -14,15 +18,19 @@ export class User {
 
   // Create new user
   static async create(userData) {
-    const { full_name, email, password_salt, password_hash, role = 'STUDENT' } = userData;
-    
+    const { id, full_name, email, password, role = 'STUDENT' } = userData;
+
+    const password_salt = crypto.randomBytes(16).toString('hex');
+    const derivedKey = await scrypt(password, password_salt, 64);
+    const password_hash = derivedKey.toString('hex');
+
     const query = `
-      INSERT INTO users (full_name, email, password_salt, password_hash, role)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO users (id, full_name, email, password_salt, password_hash, role)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
     
     try {
-      const result = await executeQuery(query, [full_name, email, password_salt, password_hash, role]);
+      const result = await executeQuery(query, [id, full_name, email, password_salt, password_hash, role]);
       const newUser = await User.findById(result.insertId);
       return newUser;
     } catch (error) {
