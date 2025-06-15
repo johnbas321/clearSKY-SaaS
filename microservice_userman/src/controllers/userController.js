@@ -6,8 +6,17 @@ export const createUser = asyncHandler(async (req, res) => {
   const { id, full_name, email, password, role } = req.body;
 
   // Check if user already exists
-  const existingUser = await User.findByEmail(email);
-  if (existingUser) {
+
+  const existingUserById = await User.findByEmail(email);
+  if (existingUserById) {
+    return res.status(409).json({
+      success: false,
+      message: 'User with this ID already exists'
+    });
+  }
+
+  const existingUserByEmail = await User.findByEmail(email);
+  if (existingUserByEmail) {
     return res.status(409).json({
       success: false,
       message: 'User with this email already exists'
@@ -64,7 +73,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (updateData.id) {
     cleanUpdateData.id = updateData.id
   }
-  
+
   if (updateData.full_name) {
     cleanUpdateData.full_name = updateData.full_name.trim();
   }
