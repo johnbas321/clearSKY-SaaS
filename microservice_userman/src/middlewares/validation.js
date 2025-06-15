@@ -8,7 +8,7 @@ export const validateCreateUser = (req, res, next) => {
   const errors = [];
 
   // Validate required fields
-  if (!id || typeof id !== 'integer' || id.length === 0) {
+  if (!id || typeof id !== 'number' || id.length === 0) {
     errors.push('ID is required and must be a non-empty integer');
 
   }
@@ -63,7 +63,7 @@ export const validateUpdateUser = (req, res, next) => {
 
   // Validate provided fields
   if (id !== undefined){
-    if (typeof id !== 'integer' || id.length === 0) {
+    if (typeof id !== 'number' || id.length === 0) {
       errors.push('ID must be a non-empty integer')
     }
   }
