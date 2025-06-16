@@ -3,11 +3,20 @@ import { asyncHandler } from '../middlewares/errorHandler.js';
 
 // Create new user
 export const createUser = asyncHandler(async (req, res) => {
-  const { full_name, email, password_salt, password_hash, role } = req.body;
+  const { id, full_name, email, password, role } = req.body;
 
   // Check if user already exists
-  const existingUser = await User.findByEmail(email);
-  if (existingUser) {
+
+  const existingUserById = await User.findByEmail(email);
+  if (existingUserById) {
+    return res.status(409).json({
+      success: false,
+      message: 'User with this ID already exists'
+    });
+  }
+
+  const existingUserByEmail = await User.findByEmail(email);
+  if (existingUserByEmail) {
     return res.status(409).json({
       success: false,
       message: 'User with this email already exists'
@@ -16,10 +25,10 @@ export const createUser = asyncHandler(async (req, res) => {
 
   // Create new user
   const newUser = await User.create({
+    id: id,
     full_name: full_name.trim(),
     email: email.toLowerCase().trim(),
-    password_salt,
-    password_hash,
+    password,
     role
   });
 
@@ -61,6 +70,10 @@ export const updateUser = asyncHandler(async (req, res) => {
   // Clean and prepare update data
   const cleanUpdateData = {};
   
+  if (updateData.id) {
+    cleanUpdateData.id = updateData.id
+  }
+
   if (updateData.full_name) {
     cleanUpdateData.full_name = updateData.full_name.trim();
   }
@@ -69,12 +82,8 @@ export const updateUser = asyncHandler(async (req, res) => {
     cleanUpdateData.email = updateData.email.toLowerCase().trim();
   }
   
-  if (updateData.password_salt) {
-    cleanUpdateData.password_salt = updateData.password_salt;
-  }
-  
-  if (updateData.password_hash) {
-    cleanUpdateData.password_hash = updateData.password_hash;
+  if (updateData.password) {
+    cleanUpdateData.password = updateData.password;
   }
   
   if (updateData.role) {
@@ -175,7 +184,7 @@ export const getUserStats = asyncHandler(async (req, res) => {
 // Get user by email (for authentication service)
 export const getUserByEmail = asyncHandler(async (req, res) => {
   const { email } = req.params;
-
+  console.log(req.params)
   if (!email) {
     return res.status(400).json({
       success: false,
@@ -191,7 +200,7 @@ export const getUserByEmail = asyncHandler(async (req, res) => {
       message: 'User not found'
     });
   }
-
+  console.log(user.toJSONWithAuth)
   // Always include auth data for this endpoint (used by auth service)
   res.json({
     success: true,

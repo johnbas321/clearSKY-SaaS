@@ -4,10 +4,14 @@ const ROLES = ['STUDENT', 'INSTRUCTOR', 'INSTITUTION_ADMIN'];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const validateCreateUser = (req, res, next) => {
-  const { full_name, email, password_salt, password_hash, role } = req.body;
+  const { id, full_name, email, password, role } = req.body;
   const errors = [];
 
   // Validate required fields
+  if (!id || typeof id !== 'number' || id.length === 0) {
+    errors.push('ID is required and must be a non-empty integer');
+
+  }
   if (!full_name || typeof full_name !== 'string' || full_name.trim().length === 0) {
     errors.push('Full name is required and must be a non-empty string');
   }
@@ -16,12 +20,8 @@ export const validateCreateUser = (req, res, next) => {
     errors.push('Valid email is required');
   }
 
-  if (!password_salt || typeof password_salt !== 'string' || password_salt.length === 0) {
-    errors.push('Password salt is required');
-  }
-
-  if (!password_hash || typeof password_hash !== 'string' || password_hash.length === 0) {
-    errors.push('Password hash is required');
+  if (!password || typeof password !== 'string' || password.length === 0) {
+    errors.push('Password is required');
   }
 
   // Validate role if provided
@@ -50,11 +50,11 @@ export const validateCreateUser = (req, res, next) => {
 };
 
 export const validateUpdateUser = (req, res, next) => {
-  const { full_name, email, password_salt, password_hash, role } = req.body;
+  const { id, full_name, email, password, role } = req.body;
   const errors = [];
 
   // Check if at least one field is provided
-  if (!full_name && !email && !password_salt && !password_hash && !role) {
+  if (!id && !full_name && !email && !password && !role) {
     return res.status(400).json({
       success: false,
       message: 'At least one field must be provided for update'
@@ -62,6 +62,11 @@ export const validateUpdateUser = (req, res, next) => {
   }
 
   // Validate provided fields
+  if (id !== undefined){
+    if (typeof id !== 'number' || id.length === 0) {
+      errors.push('ID must be a non-empty integer')
+    }
+  }
   if (full_name !== undefined) {
     if (typeof full_name !== 'string' || full_name.trim().length === 0) {
       errors.push('Full name must be a non-empty string');
@@ -78,15 +83,9 @@ export const validateUpdateUser = (req, res, next) => {
     }
   }
 
-  if (password_salt !== undefined) {
-    if (typeof password_salt !== 'string' || password_salt.length === 0) {
-      errors.push('Password salt must be a non-empty string');
-    }
-  }
-
-  if (password_hash !== undefined) {
-    if (typeof password_hash !== 'string' || password_hash.length === 0) {
-      errors.push('Password hash must be a non-empty string');
+  if (password !== undefined) {
+    if (typeof password !== 'string' || password.length === 0) {
+      errors.push('Password must be a non-empty string');
     }
   }
 
