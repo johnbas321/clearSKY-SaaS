@@ -113,40 +113,40 @@ services:
   #     - clearsky-network
 
   # Redis for Auth Service
-  # redis:
-  #   image: redis:alpine
-  #   container_name: clearsky-redis
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - redis-data:/data
-  #   networks:
-  #     - clearsky-network
-  #   restart: unless-stopped
+  redis:
+    image: redis:alpine
+    container_name: clearsky-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - clearsky-network
+    restart: unless-stopped
 
   # Database for User Management Service
-  # userman-db:
-  #   image: mysql:8.0
-  #   container_name: clearsky-userman-db
-  #   ports:
-  #     - "3306:3306"
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=rootpassword
-  #     - MYSQL_DATABASE=userman
-  #     - MYSQL_USER=clearsky
-  #     - MYSQL_PASSWORD=password
-  #   volumes:
-  #     - userman-db-data:/var/lib/mysql
-  #     - ./microservice_userman/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
-  #   networks:
-  #     - clearsky-network
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
-  #     timeout: 20s
-  #     retries: 10
-  #     interval: 10s
-  #     start_period: 30s
+  userman-db:
+    image: mysql:8.0
+    container_name: clearsky-userman-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=userman
+      - MYSQL_USER=clearsky
+      - MYSQL_PASSWORD=password
+    volumes:
+      - userman-db-data:/var/lib/mysql
+      - ./microservice_userman/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+    networks:
+      - clearsky-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
 
   # Database for Grading Service
   # grading-db:

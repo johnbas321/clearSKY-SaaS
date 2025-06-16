@@ -60,7 +60,7 @@
   <!-- Bootstrap JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
+    document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
@@ -73,6 +73,25 @@
 
       errorMsg.textContent = '';
       alert(`Logging in as: ${email}`);
+
+      try {
+          const res = await fetch('http://localhost:3001/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            alert('Login successful!');
+            window.location.href = '/grade-stats.html'; // You create this page
+          } else {
+            alert(data.message || 'Login failed');
+          }
+        } catch (err) {
+          alert('Network error');
+        }
     });
   </script>
 

@@ -4,10 +4,14 @@ const ROLES = ['STUDENT', 'INSTRUCTOR', 'INSTITUTION_ADMIN'];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const validateCreateUser = (req, res, next) => {
-  const { full_name, email, password, role } = req.body;
+  const { id, full_name, email, password, role } = req.body;
   const errors = [];
 
   // Validate required fields
+  if (!id || typeof id !== 'number' || id.length === 0) {
+    errors.push('ID is required and must be a non-empty integer');
+
+  }
   if (!full_name || typeof full_name !== 'string' || full_name.trim().length === 0) {
     errors.push('Full name is required and must be a non-empty string');
   }
@@ -46,11 +50,11 @@ export const validateCreateUser = (req, res, next) => {
 };
 
 export const validateUpdateUser = (req, res, next) => {
-  const { full_name, email, password, role } = req.body;
+  const { id, full_name, email, password, role } = req.body;
   const errors = [];
 
   // Check if at least one field is provided
-  if (!full_name && !email && !password && !role) {
+  if (!id && !full_name && !email && !password && !role) {
     return res.status(400).json({
       success: false,
       message: 'At least one field must be provided for update'
@@ -58,6 +62,11 @@ export const validateUpdateUser = (req, res, next) => {
   }
 
   // Validate provided fields
+  if (id !== undefined){
+    if (typeof id !== 'number' || id.length === 0) {
+      errors.push('ID must be a non-empty integer')
+    }
+  }
   if (full_name !== undefined) {
     if (typeof full_name !== 'string' || full_name.trim().length === 0) {
       errors.push('Full name must be a non-empty string');
