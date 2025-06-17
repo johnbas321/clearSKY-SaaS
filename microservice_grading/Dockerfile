@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3002
 
 # Command to run the application
-CMD ["node", "src/index.js"]
+CMD ["node", "src/app.js"]
