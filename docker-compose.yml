@@ -1,11 +1,10 @@
-
 services:
   # Frontend Service
   frontend:
     build: ./microservice_front
     container_name: clearsky-frontend
     ports:
-      - "80:80"
+      - "3000:3000"
     # depends_on:
     #   - auth
     #   - userman
@@ -142,7 +141,17 @@ services:
       - clearsky-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "clearsky", "-ppassword"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "clearsky",
+          "-ppassword",
+        ]
       timeout: 20s
       retries: 10
       interval: 10s
