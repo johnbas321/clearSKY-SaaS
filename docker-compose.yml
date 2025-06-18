@@ -5,6 +5,7 @@ services:
     container_name: clearsky-frontend
     ports:
       - "3000:3000"
+
     # depends_on:
     #   - auth
     #   - userman
@@ -15,20 +16,20 @@ services:
       - clearsky-network
 
   # Auth Service
-  auth:
-    build: ./microservice_auth
-    container_name: clearsky-auth
-    ports:
-      - "3001:3001"
-    depends_on:
-      - redis
-    environment:
-      - NODE_ENV=production
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - PORT=3001
-    networks:
-      - clearsky-network
+  # auth:
+  #   build: ./microservice_auth
+  #   container_name: clearsky-auth
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - redis
+  #   environment:
+  #     - NODE_ENV=production
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - PORT=3001
+  #   networks:
+  #     - clearsky-network
 
   # User Management Service
   userman:
@@ -112,16 +113,16 @@ services:
   #     - clearsky-network
 
   # Redis for Auth Service
-  redis:
-    image: redis:alpine
-    container_name: clearsky-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - clearsky-network
-    restart: unless-stopped
+  # redis:
+  #   image: redis:alpine
+  #   container_name: clearsky-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
 
   # Database for User Management Service
   userman-db:
@@ -233,3 +234,9 @@ networks:
 volumes:
   redis-data:
   userman-db-data:
+#   redis-data:
+#   userman-db-data:
+#   grading-db-data:
+#   review-db-data:
+#   stats-db-data:
+
