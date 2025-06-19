@@ -44,22 +44,33 @@ export class Course {
         }
     }
 
+    static async getAllCourses(){
+        const query = `SELECT course_name, time_period, initial_grades_at, final_grades_at FROM courses`;
+        try {
+            const result = await executeQuery(query,[]);
+            return result;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
     static async updateState(courseName, time_period){
         const course = await Course.findByName(courseName, time_period);
         if (!course){
             throw new Error('Course does not exist');
         }
         const currentState = course.grade_state;
-        const query = '';
+        let query = '';
         switch (currentState) {
             case 'VOID':
-                query = `UPDATE courses SET grade_state = OPEN WHERE course_name = ? AND time_period = ?`;
+                query = `UPDATE courses SET grade_state = 'OPEN' WHERE course_name = ? AND time_period = ?`;
                 break;
             case 'OPEN':
-                query = `UPDATE courses SET grade_state = FINAL WHERE course_name = ? AND time_period = ?`;
+                query = `UPDATE courses SET grade_state = 'FINAL', final_grades_at = CURRENT_DATE WHERE course_name = ? AND time_period = ?`;
                 break;
             case 'FINAL':
-                throw new Error('Can not a FINAL course grade');
+                throw new Error('Can not update a FINAL course grade');
             default:
                 throw new Error('Internal Error');
         }

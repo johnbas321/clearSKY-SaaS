@@ -11,6 +11,7 @@ export const dbConfig = {
   connectionLimit: parseInt(process.env.DB_CONN_LIMIT || '10', 10),
   queueLimit: parseInt(process.env.DB_QUEUE_LIMIT || '0', 10),
   charset: process.env.DB_CHARSET || 'utf8mb4',
+   timezone: process.env.DB_TIMEZONE || 'Z',
 };
   
 export const redisConfig = {
@@ -23,5 +24,5 @@ export const appConfig = {
 };
 
 export const cacheConfig = {
-  stdTTL: 300,
+  stdTTL: 180,
 }
