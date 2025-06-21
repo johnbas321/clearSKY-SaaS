@@ -29,13 +29,7 @@ export async function getGradesPerCourse(student_id, course_id, time_period) {
     try {
         const result = await executeQuery(query,[student_id, course_id, time_period]);
         if (result.length > 0){
-            const fullGrade = result[0]
-            const gradesArray = fullGrade.grades_per_question.split(',').map(Number);
-            const gradesByQuestion = {};
-            gradesArray.forEach((grade, index) => {
-                gradesByQuestion[`Q${index + 1}`] = grade;
-            });
-            return { grade: fullGrade.grade, grades_per_question: gradesByQuestion };
+            return { grade: result[0].grade, grades_per_question : result[0].grades_per_question };
         }
         return result;
     } catch (err){
@@ -43,15 +37,16 @@ export async function getGradesPerCourse(student_id, course_id, time_period) {
     }
 }
 
-export async function getGradesForStatistics(course_id, time_period) {
+export async function getGradesForStatistics(course_id, time_period, is_final) {
     const query = `
         SELECT
             grade,
             grades_per_question
-        FROM grades WHERE course_id = ? AND time_period = ?
+        FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ?
     `
     try {
-        const result = await executeQuery(query,[course_id, time_period]);
+        const result = await executeQuery(query,[course_id, time_period, is_final]);
+        console.log(result)
         if (result.length > 0){
             const transformed = result.map(row => {
                 const gradesArray = row.grades_per_question.split(',').map(Number);

@@ -14,13 +14,15 @@ export class Course {
     }
 
     static async create(courseData){
-        const { id, course_name, instructor_id, time_period } = courseData;
+        const { id, course_name, instructor_id, time_period, grade_state } = courseData;
         const query = `
-            INSERT INTO courses (id, course_name, instructor_id, time_period)
-            VALUES(?, ?, ?, ?)
+            INSERT INTO courses (id, course_name, instructor_id, time_period, grade_state)
+            VALUES(?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                grade_state = VALUES(grade_state)
         `;
         try {
-            const result = await executeQuery(query, [id, course_name, instructor_id, time_period]);
+            const result = await executeQuery(query, [id, course_name, instructor_id, time_period, grade_state]);
             return new Course(courseData)
         } catch(err){
             if (err.code === "ER_DUP_ENTRY"){
@@ -45,7 +47,7 @@ export class Course {
     }
 
     static async getAllCourses(){
-        const query = `SELECT course_name, time_period, initial_grades_at, final_grades_at FROM courses`;
+        const query = `SELECT id, course_name, time_period, initial_grades_at, final_grades_at FROM courses`;
         try {
             const result = await executeQuery(query,[]);
             return result;

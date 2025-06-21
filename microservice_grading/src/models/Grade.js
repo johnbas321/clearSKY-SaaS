@@ -6,6 +6,7 @@ export class Grade {
         this.time_period = data.time_period;
         this.student_id = data.student_id;
         this.grade = data.grade;
+        this.total_questions = data.total_questions;
         this.grades_per_question = data.grades_per_question;
         this.is_final = data.is_final || false;
         this.created_at = data.created_at;
@@ -13,19 +14,16 @@ export class Grade {
     }
 
     static async create(gradeData){
-        const { course_id, time_period, student_id, grade, grades_per_question, is_final } = gradeData;
+        const { course_id, time_period, student_id, grade, total_questions, grades_per_question, is_final } = gradeData;
         const query = `
-            INSERT INTO grades (course_id, time_period, student_id, grade, grades_per_question, is_final)
-            VALUES(?, ?, ?, ?, ?, ?)
+            INSERT INTO grades (course_id, time_period, student_id, grade, total_questions, grades_per_question, is_final)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                grade = VALUES(grade),
+                grades_per_question = VALUES(grades_per_question)
         `;
         try {
-            if (is_final){
-                const deletedInitalGrade = await this.delete(course_id, time_period, student_id);
-                if (!deletedInitalGrade) {
-                    throw new Error('Trying to upload final grades without inital grades uploaded');
-                }
-            }
-            await executeQuery(query, [course_id, time_period, student_id, grade, grades_per_question, is_final]);
+            await executeQuery(query, [course_id, time_period, student_id, grade, total_questions, grades_per_question, is_final]);
             return new Grade(gradeData);
         } catch(err){
             if (err.code === "ER_DUP_ENTRY"){
@@ -35,24 +33,18 @@ export class Grade {
         }
     }
 
-    static async findById(course_id, time_period, student_id) {
-        const query = 'SELECT * FROM grades WHERE course_id = ? and time_period = ? and student_id = ?';
+    static async findTotalQuestion(course_id, time_period) {
+        const query = 'SELECT * FROM grades WHERE course_id = ? and time_period = ? LIMIT 1';
         try {
-            const result = await executeQuery(query, [course_id, time_period, student_id]);
+            const result = await executeQuery(query, [course_id, time_period]);
             if (result.length === 0) {
                 return null;
             }
-            return new Grade(result[0]);
+            return result[0].total_questions;
         } catch (err){
             console.error(err);
             throw err;
         }
-    }
-
-    static async updateGrade(course_id, time_period, student_id) {
-        query = `UPDATE courses SET grade_state = OPEN WHERE course_name = ?`;
-
-        const query = 'UPDATE grades SET grade ='
     }
 
     static async delete(course_id, time_period, student_id) {
@@ -68,4 +60,46 @@ export class Grade {
             throw err;
         }
     }
+
+    static async aggregateGrades(course_id, time_period, is_final){
+        const total_questions =  parseInt(await Grade.findTotalQuestion(course_id, time_period));
+        const test_n = 10
+        let query_list = [];
+        try{
+            query_list.push(executeQuery(`SELECT 'total' as question, grade, COUNT(*) AS count FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ? GROUP BY grade ORDER BY grade`,[course_id, time_period, is_final]));
+            for (let index = 1; index < test_n + 1; index++) {
+                query_list.push(executeQuery(createQuestionQuery(index),[course_id, time_period, is_final]));
+            }
+            const result = await Promise.all(query_list);
+            const distribution = {};
+            const ALL_GRADES = Array.from({ length: 11 }, (_, i) => String(i));
+            for (const res of result) {
+              if (res.length === 0) continue;
+            
+              const question = res[0].question;
+              distribution[question] = {};
+            
+              for (const g of ALL_GRADES) {
+                distribution[question][g] = 0;
+              }
+          
+              res.forEach(({ grade, count }) => {
+                distribution[question][grade] = count;
+              });
+            }
+            return distribution;
+        } catch (err){
+            console.error(err);
+            throw err;
+        }
+    }
+}
+
+function createQuestionQuery(questionIndex){
+    const i = questionIndex < 10 ? `0${questionIndex}` : questionIndex;
+    return `
+        SELECT 'Q${i}' AS question, CAST(JSON_UNQUOTE(JSON_EXTRACT(grades_per_question, '$.Q${i}')) AS UNSIGNED) AS grade, COUNT(*) AS count
+        FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ?
+        GROUP BY CAST(JSON_UNQUOTE(JSON_EXTRACT(grades_per_question, '$.Q${i}')) AS UNSIGNED)
+        `;
 }

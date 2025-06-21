@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3307', 10),
+  host: process.env.DB_HOST || 'grading-db',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
   user: process.env.DB_USER || 'clearsky',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_NAME || 'grading',
@@ -15,7 +15,7 @@ export const dbConfig = {
 };
   
 export const redisConfig = {
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
+  url: process.env.REDIS_URL || 'redis://redis:6379',
 };
   
 export const appConfig = {

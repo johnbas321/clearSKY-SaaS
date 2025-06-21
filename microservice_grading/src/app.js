@@ -5,11 +5,7 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
-const PORT = 5500;
-
-app.use(cors({
-  origin: 'http://localhost:5500',
-  credentials: true}));
+const PORT = 3002;
 
 app.use(cookieParser());
 app.use(express.json());

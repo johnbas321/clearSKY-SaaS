@@ -81,11 +81,6 @@ export async function uploadGrades(req, res, next){
     const cache_id = uuidv4();
     gradeCache.set(cache_id, { course_id, course_name, time_period, grades });
 
-    // await pool.query(
-    //   'UPDATE courses SET grade_sate = ? WHERE id = ?',
-    //   ['OPEN', courseId]
-    // );  
-
     res.status(200).json({
       message: 'Excel parsed successfully', 
       data: {
@@ -117,7 +112,7 @@ export async function confirmInitalUpload(req, res, next) {
     }
     const { course_id, course_name, time_period, grades } = data;
 
-    await Course.create({ id: course_id, course_name, instructor_id: user_id, time_period });
+    await Course.create({ id: course_id, course_name, instructor_id: user_id, time_period, grade_state: "OPEN"});
 
     await Promise.all(grades.map(async g => {
       const gradeFullCourse = g["Τμήμα Τάξης"].trim().split(' ');
@@ -128,10 +123,11 @@ export async function confirmInitalUpload(req, res, next) {
       }
       const student_id = parseInt(g["Αριθμός Μητρώου"]);
       const grade = parseInt(g["Βαθμολογία"]);
-      const grades_per_question = Object.keys(g).filter(k => /^Q\d+$/.test(k)).map(k => g[k]).join(',');
+      const grades_per_question = Object.fromEntries( Object.entries(g).filter(([k]) => /^Q\d+$/.test(k)) );
+      const total_questions = Object.keys(grades_per_question).length;
 
       try {
-      await Grade.create({ course_id, time_period, student_id, grade, grades_per_question, is_final: false })
+      await Grade.create({ course_id, time_period, student_id, grade, total_questions, grades_per_question, is_final: false })
       }catch (err){
         console.error("Unable to create grade entity", err);
         throw err;
@@ -175,19 +171,21 @@ export async function confirmFinalUpload(req, res, next) {
       }
       const student_id = parseInt(g["Αριθμός Μητρώου"]);
       const grade = parseInt(g["Βαθμολογία"]);
-      const grades_per_question = Object.keys(g).filter(k => /^Q\d+$/.test(k)).map(k => g[k]).join(',');
+      const grades_per_question = Object.fromEntries( Object.entries(g).filter(([k]) => /^Q\d+$/.test(k)) );
+      const total_questions = Object.keys(grades_per_question).length;
 
       try {
-      await Grade.create({ course_id, time_period, student_id, grade, grades_per_question, is_final: true })
+      await Grade.create({ course_id, time_period, student_id, grade, total_questions, grades_per_question, is_final: true })
       }catch (err){
         console.error("Unable to create grade entity", err);
-        throw err;
+        throw new UsageError("Error trying to store grades", 410);
+
       }
     }));
 
     gradeCache.del(cache_id);
 
-    await Course.updateState(course_name, time_period);
+    await Course.create({ id: course_id, course_name, instructor_id: user_id, time_period, grade_state: "FINAL" });
 
     res.status(201).json({
       message: "Final grades uploaded successfully"
@@ -225,19 +223,19 @@ export async function viewStudentCourses(req, res, next){
 export async function viewStudentGrades(req, res, next) {
   try{
       const student_id = req.user.userId;
-      if (!req.body){
-        throw new UsageError('Request is missing important information', 400)
-      }
-      const { course_id, time_period } = req.body;
+      const { course_id, time_period } = req.query;
 
       if (req.user.role !== 'student') {
         throw new UsageError('Only students can view their courses', 403);
       }
       if (!course_id || !time_period){
-        throw new UsageError('Course ID and time period are not provided', 400);
+        throw new UsageError('Request is missing important information', 400)
       }
 
       const result = await getGradesPerCourse(student_id, course_id, time_period);
+      if (result.length == 0){
+        throw new UsageError("No grades found for this course at the specific time period", 404);
+      }
       res.status(201).json(result);
 
   } catch (err){
@@ -249,11 +247,17 @@ export async function viewStudentGrades(req, res, next) {
 
 export async function getGradesForStats(req, res, next) {
   try {
-    if (!req.params){
+    const { course_id, time_period, is_final } = req.query;
+    if (!course_id || !time_period){
       throw new UsageError("Missing query params", 404);
     }
-    const { course_id, time_period } = req.query;
-    const result = await getGradesForStatistics(course_id, time_period)
+    if (!course_id || !time_period || !is_final){
+      throw new UsageError("Missing query params", 404);
+    }
+    const result = await Grade.aggregateGrades(course_id, time_period, is_final);
+    if (result.length === 0 ){
+      throw new UsageError("No grades found", 404);
+    }
     res.status(200).json(result);
 
   } catch (err) {
@@ -270,7 +274,7 @@ export async function healthCheck(req, res, next){
 }
 
 function normalizePeriod(periodStr) {
-  const [yearRange, season] = periodStr.split(' '); // e.g., ["2024-2025", "Χειμερινή"]
+  const [yearRange, season] = periodStr.split(' ');
 
   const seasonMap = {
     'Χειμερινή': 'ΧΕΙΜ',

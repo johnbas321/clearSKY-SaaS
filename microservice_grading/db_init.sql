@@ -25,12 +25,12 @@ CREATE TABLE IF NOT EXISTS grades (
     time_period VARCHAR(50) NOT NULL,
     student_id INT NOT NULL,
     grade INT NOT NULL,
-    grades_per_question VARCHAR(255) NULL,
+    total_questions INT NOT NULL,
+    grades_per_question JSON,
     is_final BOOLEAN NOT NULL DEFAULT FALSE, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (course_id, time_period, student_id),
     FOREIGN KEY (course_id, time_period) REFERENCES courses(id, time_period) ON DELETE CASCADE,
-    INDEX idx_grade (grade),
-    INDEX idx_grades_per_question (grades_per_question)
+    INDEX idx_grade (grade)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
