@@ -18,13 +18,3 @@
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-
-/* .carousel-control-prev-icon,
-.carousel-control-next-icon {
-  color: black;
-} */
-
-.carousel-custom-arrow {
-  font-size: 2rem;
-  color: red; /* Change arrow color here */
-}

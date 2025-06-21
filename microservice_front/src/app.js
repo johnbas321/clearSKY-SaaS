@@ -1,6 +1,9 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Setup paths
 const __filename = fileURLToPath(import.meta.url);
@@ -12,6 +15,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.authToken = "sample-auth-token"; // Normally read from cookies or headers
@@ -29,6 +33,98 @@ app.get("/usermanagement", async (req, res) => {
 app.get("/gradestatistics", async (req, res) => {
   res.render("grade-stats", { user: "Belesis" });
 });
+
+app.get("/upload-init", async (req, res) => {
+  res.render("post-grades", { user: "Belesis", grades: "initial" });
+});
+
+app.get("/upload-final", async (req, res) => {
+  res.render("post-grades", { user: "Belesis", grades: "final" });
+});
+
+app.get("/review-requests", async (req, res) => {
+  const data = [
+    {
+      review_id: 1,
+      course_name: "Math",
+      period: "June",
+      student: "Mpelesis",
+    },
+    {
+      review_id: 2,
+      course_name: "CS",
+      period: "May",
+      student: "Bazdekis",
+    },
+  ];
+  res.render("review-requests", { user: "Belesis", requests: data });
+});
+
+// post requests
+app.post("/upload", upload.single("file"), async (req, res) => {
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  const parsedData = {
+    courseName: "Math 101",
+    examPeriod: "June 2025",
+    numberOfGrades: 42,
+  };
+
+  res.render("partials/parsing-table", parsedData, (err, html) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error rendering modal content");
+    }
+
+    res.send({ html }); // Send rendered HTML as response
+  });
+});
+
+app.post("/upload-init-confirm", upload.single("file"), async (req, res) => {
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  const parsedData = {
+    courseName: "Math 101",
+    examPeriod: "June 2025",
+    numberOfGrades: 42,
+  };
+
+  res.json({ message: "Data successfully saved!" });
+});
+
+app.post("/upload-final-confirm", upload.single("file"), async (req, res) => {
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  const parsedData = {
+    courseName: "Math 101",
+    examPeriod: "June 2025",
+    numberOfGrades: 42,
+  };
+
+  res.json({ message: "Data successfully saved!" });
+});
+
+app.post(
+  "/submit-review-response",
+  upload.single("attachment"),
+  async (req, res) => {
+    console.log(req.body);
+    console.log(req.file);
+    res.json({ message: "Response successfully saved!" });
+  }
+);
 
 app.get("/test", async (req, res) => {
   res.render("testpage", { user: "Belesis" });
