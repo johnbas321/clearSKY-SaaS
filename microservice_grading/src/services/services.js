@@ -6,7 +6,8 @@ export async function joinGradeWithCourse(student_id) {
             c.id,
             c.course_name,
             g.time_period,
-            c.grade_state
+            c.grade_state,
+            c.instructor_id
         FROM grades g
         JOIN courses c on c.id = g.course_id AND c.time_period = g.time_period
         WHERE student_id = ?

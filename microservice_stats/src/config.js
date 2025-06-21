@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3309', 10),
+  host: process.env.DB_HOST || 'stats-db',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
   user: process.env.DB_USER || 'clearsky',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_NAME || 'stats',
@@ -15,11 +15,11 @@ export const dbConfig = {
 };
   
 export const redisConfig = {
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
+  url: process.env.REDIS_URL || 'redis://redis:6379',
 };
   
 export const appConfig = {
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: parseInt(process.env.PORT || '3004', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
 };
 

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Frontend Service
   frontend:
@@ -15,7 +13,8 @@ services:
       - stats
     networks:
       - clearsky-network
-
+    restart: unless-stopped
+  
   # Auth Service
   auth:
     build: ./microservice_auth
@@ -31,6 +30,7 @@ services:
       - PORT=3001
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # User Management Service
   userman:
@@ -50,6 +50,7 @@ services:
       - PORT=3005
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Grading Service
   grading:
@@ -69,6 +70,8 @@ services:
       - PORT=3002
     networks:
       - clearsky-network
+    restart: unless-stopped
+
 
   # Review Service
   review:
@@ -107,6 +110,7 @@ services:
       - PORT=3004
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Redis for Auth Service
   redis:
@@ -118,13 +122,14 @@ services:
       - redis-data:/data
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Database for User Management Service
   userman-db:
     image: mysql:8.0
     container_name: clearsky-userman-db
     ports:
-      - "3306:3306"
+      - "3305:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=userman
@@ -132,8 +137,10 @@ services:
       - MYSQL_PASSWORD=password
     volumes:
       - userman-db-data:/var/lib/mysql
+      - ./microservice_userman/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Database for Grading Service
   grading-db:
@@ -148,8 +155,10 @@ services:
       - MYSQL_PASSWORD=password
     volumes:
       - grading-db-data:/var/lib/mysql
+      - ./microservice_grading/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Database for Review Service
   review-db:
@@ -164,8 +173,10 @@ services:
       - MYSQL_PASSWORD=password
     volumes:
       - review-db-data:/var/lib/mysql
+      - ./microservice_review/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     networks:
       - clearsky-network
+    restart: unless-stopped
 
   # Database for Statistics Service
   stats-db:
@@ -180,9 +191,11 @@ services:
       - MYSQL_PASSWORD=password
     volumes:
       - stats-db-data:/var/lib/mysql
+      - ./microservice_stats/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     networks:
       - clearsky-network
-
+    restart: unless-stopped
+  
 networks:
   clearsky-network:
     driver: bridge

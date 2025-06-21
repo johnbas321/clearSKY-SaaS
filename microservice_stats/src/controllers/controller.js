@@ -6,7 +6,7 @@ export async function getStats(req, res, next) {
   try{
     const { course_id, time_period, grade_state } = req.query;
 
-    if (!course_id || !time_period || grade_state){
+    if (!course_id || !time_period || !grade_state){
       throw new UsageError('Request is missing important information', 400)
     }
     let result = await Stat.fetchStatsFromDb(course_id, time_period, grade_state);

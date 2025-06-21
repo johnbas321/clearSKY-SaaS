@@ -1,22 +1,39 @@
 services:
-  grading:
-    build: ./microservice_grading
-    container_name: clearsky-grading
+  # grading:
+  #   build: ./microservice_grading
+  #   container_name: clearsky-grading
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     - grading-db
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DB_HOST=grading-db
+  #     - DB_PORT=3306
+  #     - DB_USER=clearsky
+  #     - DB_PASSWORD=password
+  #     - DB_NAME=grading
+  #     - PORT=3002
+  #   networks:
+  #     - clearsky-network
+
+review:
+    build: ./microservice_review
+    container_name: clearsky-review
     ports:
-      - "3002:3002"
+      - "3003:3003"
     depends_on:
-      - grading-db
+      - review-db
     environment:
       - NODE_ENV=production
-      - DB_HOST=grading-db
+      - DB_HOST=review-db
       - DB_PORT=3306
       - DB_USER=clearsky
       - DB_PASSWORD=password
-      - DB_NAME=grading
-      - PORT=3002
+      - DB_NAME=review
+      - PORT=3003
     networks:
       - clearsky-network
-
   # Redis for Auth Service
   redis:
     image: redis:alpine
@@ -28,38 +45,55 @@ services:
     networks:
       - clearsky-network
 
-  #Database for Grading Service
-  grading-db:
+  # #Database for Grading Service
+  # grading-db:
+  #   image: mysql:8.0
+  #   container_name: clearsky-grading-db
+  #   ports:
+  #     - "3307:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpassword
+  #     - MYSQL_DATABASE=grading
+  #     - MYSQL_USER=clearsky
+  #     - MYSQL_PASSWORD=password
+  #   volumes:
+  #     - grading-db-data:/var/lib/mysql
+  #     - ./microservice_grading/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+  #   networks:
+  #     - clearsky-network
+
+  # stats-db:
+  #     image: mysql:8.0
+  #     container_name: clearsky-stats-db
+  #     ports:
+  #       - "3309:3306"
+  #     environment:
+  #       - MYSQL_ROOT_PASSWORD=rootpassword
+  #       - MYSQL_DATABASE=stats
+  #       - MYSQL_USER=clearsky
+  #       - MYSQL_PASSWORD=password
+  #     volumes:
+  #       - stats-db-data:/var/lib/mysql
+  #       - ./microservice_stats/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+  #     networks:
+  #       - clearsky-network
+
+# Database for Review Service
+  review-db:
     image: mysql:8.0
-    container_name: clearsky-grading-db
+    container_name: clearsky-review-db
     ports:
-      - "3307:3306"
+      - "3308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=grading
+      - MYSQL_DATABASE=review
       - MYSQL_USER=clearsky
       - MYSQL_PASSWORD=password
     volumes:
-      - grading-db-data:/var/lib/mysql
-      - ./microservice_grading/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+      - review-db-data:/var/lib/mysql
+      - ./microservice_review/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     networks:
       - clearsky-network
-
-  stats-db:
-      image: mysql:8.0
-      container_name: clearsky-stats-db
-      ports:
-        - "3309:3306"
-      environment:
-        - MYSQL_ROOT_PASSWORD=rootpassword
-        - MYSQL_DATABASE=stats
-        - MYSQL_USER=clearsky
-        - MYSQL_PASSWORD=password
-      volumes:
-        - stats-db-data:/var/lib/mysql
-        - ./microservice_stats/db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
-      networks:
-        - clearsky-network
 
 networks:
   clearsky-network:
@@ -67,5 +101,6 @@ networks:
 
 volumes:
   redis-data:
-  grading-db-data:
-  stats-db-data:
+  # grading-db-data:
+  # stats-db-data:
+  review-db-data:
