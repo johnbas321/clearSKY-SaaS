@@ -29,22 +29,41 @@
               </tr>
             </thead>
             <tbody>
-              <% Object.values(requests).forEach((request) => { %>
+              <% Object.values(courses).forEach((course) => { %>
               <tr>
-                <td><%=request["course_name"]%></td>
-                <td><%=request["period"]%></td>
-                <td><%=request["student"]%></td>
+                <td><%=course["name"]%></td>
+                <td><%=course["period"]%></td>
+                <td><%=course["status"]%></td>
                 <td>
                   <button
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
+                    data-bs-target="#gradesModal"
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["name"]%>"
+                    period="<%=course["period"]%>"
+                    >
+                    View my grades
+                  </button>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
                     data-bs-target="#reviewModal"
-                    review-id="<%=request["review_id"]%>"
-                    course="<%=request["course_name"]%>"
-                    period="<%=request["period"]%>"
-                    student="<%=request["student"]%>"
-                  >
-                    Review
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["name"]%>"
+                    period="<%=course["period"]%>"
+                    >
+                    Ask for review
+                  </button>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#statusModal"
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["name"]%>"
+                    period="<%=course["period"]%>"
+                    >
+                    View review status
                   </button>
                 </td>
               </tr>
@@ -55,12 +74,11 @@
       </div>
     </main>
 
-    <div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal fade" id="gradesModal" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Reply to grade review request
+            <h1 class="modal-title fs-5" id="modalTitle">
             </h1>
             <button
               type="button"
@@ -69,34 +87,18 @@
             ></button>
           </div>
           <div class="modal-body">
-            <h2 id="modalPop" class="fs-5"></h2>
-            <form id="reviewForm">
-              <input type="hidden" name="reviewID" id="reviewID" />
-              <div class="mb-3">
-                <label class="form-label">Action</label>
-                <select name="action" class="form-select" required>
-                  <option value="">Select...</option>
-                  <option value="approve">Approve</option>
-                  <option value="reject">Reject</option>
-                  <option value="clarify">Request more info</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Message (optional)</label>
-                <textarea
-                  name="message"
-                  class="form-control"
-                  rows="3"
-                ></textarea>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Attachment (optional)</label>
-                <input name="attachment" class="form-control" type="file" />
-              </div>
-              <button type="submit" class="btn btn-success">
-                Submit Response
-              </button>
-            </form>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">Total</th>
+                  <td>5</td>
+                </tr>
+                <tr>
+                  <th scope="row">Q1</th>
+                  <td>2</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -104,6 +106,6 @@
 
     <%- include('footer') -%>
 
-    <script src="review-requests.js"></script>
+    <script src="courses.js"></script>
   </body>
 </html>

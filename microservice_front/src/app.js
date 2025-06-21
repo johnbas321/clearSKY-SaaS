@@ -70,9 +70,9 @@ app.get("/courses", async (req, res) => {
     },
     {
       review_id: 2,
-      course_name: "CS",
+      name: "CS",
       period: "May",
-      student: "Bazdekis",
+      status: "closed",
     },
   ];
   res.render("courses", { user: "Belesis", courses: data });
