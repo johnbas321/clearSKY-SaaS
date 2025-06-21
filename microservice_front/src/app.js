@@ -60,6 +60,24 @@ app.get("/review-requests", async (req, res) => {
   res.render("review-requests", { user: "Belesis", requests: data });
 });
 
+app.get("/courses", async (req, res) => {
+  const data = [
+    {
+      course_id: 1,
+      name: "Math",
+      period: "June",
+      status: "open",
+    },
+    {
+      review_id: 2,
+      course_name: "CS",
+      period: "May",
+      student: "Bazdekis",
+    },
+  ];
+  res.render("courses", { user: "Belesis", courses: data });
+});
+
 // post requests
 app.post("/upload", upload.single("file"), async (req, res) => {
   const file = req.file;
