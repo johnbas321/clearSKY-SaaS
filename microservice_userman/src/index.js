@@ -62,7 +62,7 @@ const startServer = async () => {
       console.log('   Database will be retried on first request');
     }
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 User management service running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/users/health`);
