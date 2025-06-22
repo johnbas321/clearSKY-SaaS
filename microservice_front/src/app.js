@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
@@ -19,6 +20,15 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
+app.use(
+  session({
+    secret: "mpelesis",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 3600000 },
+  })
+);
+
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
@@ -26,12 +36,36 @@ app.use((req, res, next) => {
 
 app.use("/admin/", adminRoutes);
 
-app.get("/", async (req, res) => {
+app.get("/login", async (req, res) => {
+  if (req.session.isLoggedIn) {
+    res.redirect("/error");
+    return;
+  }
   res.render("index", { user: "Belesis" });
 });
 
+app.get("/error", async (req, res) => {
+  res.render("error", {
+    user: req.session.name,
+    error: "You are already signed in",
+  });
+});
+
+// need to integrate this and test
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect("/login");
+      // res.status(200).json({ msg: `Successfully logged out...` });
+    }
+  });
+});
+
 app.get("/gradestatistics", async (req, res) => {
-  res.render("grade-stats", { user: "Belesis" });
+  const { email, name, role } = req.session;
+  res.render("grade-stats", { user: name });
 });
 
 app.get("/upload-init", async (req, res) => {
@@ -79,6 +113,11 @@ app.get("/courses", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+  if (req.session.isLoggedIn) {
+    console.log(req.session.isLoggedIn);
+    res.redirect("/error");
+    return;
+  }
   const result = await fetch("http://localhost:3001/login", {
     method: "POST",
     headers: {
@@ -90,14 +129,21 @@ app.post("/login", async (req, res) => {
     }),
   });
 
-  // console.log(result);
-  const lo = await result.json();
-  console.log(lo);
-  res.json(lo);
-  // res.json({ message: "Logged in successfully saved!" });
+  const result_json = await result.json();
 
-  // if fdsaf == instrucotr
-  //   redirect /fdsafs
+  if (!result.ok) {
+    const { message } = result_json;
+    res.render("error", { user: "", error: message });
+  }
+
+  const { user } = result_json;
+
+  req.session.isLoggedIn = true;
+  req.session.email = user.email;
+  req.session.name = user.fullName;
+  req.session.role = user.role;
+
+  res.redirect("/gradestatistics");
 });
 
 // post requests
