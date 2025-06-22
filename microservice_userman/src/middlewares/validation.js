@@ -1,4 +1,4 @@
-const ROLES = ['STUDENT', 'INSTRUCTOR', 'INSTITUTION_ADMIN'];
+const ROLES = ['student', 'instructor', 'institution_admin'];
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
