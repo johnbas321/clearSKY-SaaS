@@ -21,8 +21,8 @@ export class Request {
             VALUES (?, ?, ?, ?, ?, ?)
         `;
         try {
-            await executeQuery(query, [course_name, time_period, student_id,  student_name, instructor_id, request_message]);
-            return new Request(requestData);
+            const result = await executeQuery(query, [course_name, time_period, student_id,  student_name, instructor_id, request_message]);
+            return result.insertId;
         } catch (err){
             if (err.code === "ER_DUP_ENTRY"){
                 throw new Error('Request already exists');

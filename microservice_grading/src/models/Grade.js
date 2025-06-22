@@ -20,7 +20,8 @@ export class Grade {
             VALUES(?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 grade = VALUES(grade),
-                grades_per_question = VALUES(grades_per_question)
+                grades_per_question = VALUES(grades_per_question),
+                is_final = VALUES(is_final)
         `;
         try {
             await executeQuery(query, [course_id, time_period, student_id, grade, total_questions, grades_per_question, is_final]);
@@ -63,11 +64,10 @@ export class Grade {
 
     static async aggregateGrades(course_id, time_period, is_final){
         const total_questions =  parseInt(await Grade.findTotalQuestion(course_id, time_period));
-        const test_n = 10
         let query_list = [];
         try{
             query_list.push(executeQuery(`SELECT 'total' as question, grade, COUNT(*) AS count FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ? GROUP BY grade ORDER BY grade`,[course_id, time_period, is_final]));
-            for (let index = 1; index < test_n + 1; index++) {
+            for (let index = 1; index < total_questions + 1; index++) {
                 query_list.push(executeQuery(createQuestionQuery(index),[course_id, time_period, is_final]));
             }
             const result = await Promise.all(query_list);

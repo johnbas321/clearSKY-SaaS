@@ -9,14 +9,25 @@ export async function getStats(req, res, next) {
     if (!course_id || !time_period || !grade_state){
       throw new UsageError('Request is missing important information', 400)
     }
-    let result = await Stat.fetchStatsFromDb(course_id, time_period, grade_state);
+    if (grade_state !== "FINAL" && grade_state !== "OPEN"){
+      throw new UsageError('Invalid grade_state');
+    }
+    let {result, canFetch} = await Stat.fetchStatsFromDb(course_id, time_period, grade_state);
     if (result.length === 0){
-      console.log("Fetching from grade microservice...");
+      if (!canFetch){
+        throw new UsageError("Trying to fetch final stats for an open course",403);
+      }
+      console.log("Fetching initial from grade microservice...");
       result = await fetchStatsFromGrades(course_id, time_period, grade_state);
-      console.log (result);
-      await Stat.create({ course_id, time_period, distribution: result, is_final : (grade_state === "FINAL") ? true : false })
+      await Stat.create({ course_id, time_period, distribution: result, is_final : false })
     } else{
-      result = result[0].distribution;
+        if (!canFetch){
+          result = result[0].distribution;
+        } else{
+          console.log("Fetching final from grade microservice...");
+          result = await fetchStatsFromGrades(course_id, time_period, grade_state);
+          await Stat.create({ course_id, time_period, distribution: result, is_final : true })
+        }
     }
     res.status(201).json(result);
 
