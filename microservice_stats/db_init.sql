@@ -1,5 +1,5 @@
 -- db_init.sql
--- Database initialization script for Courses/Grading microservice
+-- Database initialization script for Statistics microservice
 
 CREATE DATABASE IF NOT EXISTS stats CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE stats;
