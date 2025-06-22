@@ -20,22 +20,34 @@
           <li class="text-center">
             <a href="#" class="nav-link text-white">
               <i
-                class="bi d-block mx-auto mb-1 bi-speedometer2"
+                class="bi d-block mx-auto mb-1 bi-bar-chart"
                 style="font-size: 1.5rem"
               ></i>
-              Dashboard
+              Grade Stats
             </a>
           </li>
 
+          <% if (user.role === "instructor") { %>
           <li class="text-center">
-            <a href="#" class="nav-link text-white">
+            <a href="/instructor/upload-init" class="nav-link text-white">
               <i
                 class="bi d-block mx-auto mb-1 bi-upload"
                 style="font-size: 1.5rem"
               ></i>
-              Upload Grades
+              Upload Initial Grades
             </a>
           </li>
+
+          <li class="text-center">
+            <a href="/instructor/upload-final" class="nav-link text-white">
+              <i
+                class="bi d-block mx-auto mb-1 bi-upload"
+                style="font-size: 1.5rem"
+              ></i>
+              Upload Final Grades
+            </a>
+          </li>
+          <% } %>
 
           <li class="text-center">
             <a href="#" class="nav-link text-white">
@@ -46,20 +58,11 @@
               Review Requests
             </a>
           </li>
-
-          <li class="text-center">
-            <a href="#" class="nav-link text-white">
-              <i
-                class="bi d-block mx-auto mb-1 bi-bar-chart"
-                style="font-size: 1.5rem"
-              ></i>
-              Grade Stats
-            </a>
-          </li>
         </ul>
 
+        <% if (user) { %>
         <div class="d-flex align-items-center">
-          <span class="text-white me-3"><%= user %></span>
+          <span class="text-white me-3"><%= user.name %></span>
           <div class="flex-shrink-0 dropdown">
             <a
               href="#"
@@ -77,6 +80,11 @@
             </ul>
           </div>
         </div>
+        <% } else { %>
+        <div class="d-flex align-items-center">
+          <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+        </div>
+        <% } %>
       </div>
     </div>
   </div>
