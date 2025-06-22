@@ -76,7 +76,7 @@
 
 ### User
 - **Ιδιότητες**: id, username, email, role
-- **Ρόλοι**: STUDENT, INSTRUCTOR, INSTITUTION_REPRESENTATIVE
+- **Ρόλοι**: STUDENT, INSTRUCTOR, INSTITUTION_ADMIN
 - **Λειτουργίες**: createUser, updateUser, deleteUser, getUserInfo, getCourses, getGrades
 
 ### AuthToken
