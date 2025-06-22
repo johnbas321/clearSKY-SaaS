@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clearSKY Login</title>
+
+    <%- include('bootstrap-resources') -%>
+  </head>
+  <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+    <%- include('color-modes') -%> <%- include('header', {user: user}) -%>
+
+    <main class="mt-5">
+      <div class="alert alert-danger" role="alert">Error: <%= error %></div>
+    </main>
+
+    <%- include('footer') -%>
+  </body>
+</html>

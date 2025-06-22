@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Requests</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <%- include('bootstrap-resources') -%>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+    <%- include('color-modes') -%> <%- include('header', {user: user}) -%>
+
+    <main>
+      <div class="table-wrapper container">
+        <h4 class="my-4">Review Requests</h4>
+        <div class="table-responsive">
+          <table
+            class="table table-bordered table-striped align-middle"
+            id="requestTable"
+          >
+            <thead class="table-dark">
+              <tr>
+                <th>Course Name</th>
+                <th>Examination Period</th>
+                <th>Student Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% Object.values(requests).forEach((request) => { %>
+              <tr>
+                <td><%=request["course_name"]%></td>
+                <td><%=request["period"]%></td>
+                <td><%=request["student"]%></td>
+                <td>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reviewModal"
+                    review-id="<%=request["review_id"]%>"
+                    course="<%=request["course_name"]%>"
+                    period="<%=request["period"]%>"
+                    student="<%=request["student"]%>"
+                  >
+                    Review
+                  </button>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="reviewModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Reply to grade review request
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h2 id="modalPop" class="fs-5"></h2>
+            <form id="reviewForm">
+              <input type="hidden" name="reviewID" id="reviewID" />
+              <div class="mb-3">
+                <label class="form-label">Action</label>
+                <select name="action" class="form-select" required>
+                  <option value="">Select...</option>
+                  <option value="approve">Approve</option>
+                  <option value="reject">Reject</option>
+                  <option value="clarify">Request more info</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Message (optional)</label>
+                <textarea
+                  name="message"
+                  class="form-control"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Attachment (optional)</label>
+                <input name="attachment" class="form-control" type="file" />
+              </div>
+              <button type="submit" class="btn btn-success">
+                Submit Response
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('footer') -%>
+
+    <script src="review-requests.js"></script>
+    <!-- <script>
+      const table = document.getElementById("requestTable");
+      table.addEventListener("click", function (e) {
+        if (e.target.classList.contains("review-btn")) {
+          const button = e.target;
+          const row = button.closest("tr");
+
+          // Remove any open forms first
+          document
+            .querySelectorAll(".review-form")
+            .forEach((formRow) => formRow.remove());
+
+          // Insert new form row after this one
+          const formRow = document.createElement("tr");
+          formRow.classList.add("review-form");
+          formRow.innerHTML = `
+          <td colspan="4">
+            <form class="p-3 border rounded bg-light" onsubmit="submitReview(event)">
+              <div class="mb-3">
+                <label class="form-label">Action</label>
+                <select class="form-select" required>
+                  <option value="">Select...</option>
+                  <option value="approve">Approve</option>
+                  <option value="reject">Reject</option>
+                  <option value="clarify">Request more info</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-success">Submit Response</button>
+            </form>
+          </td>
+        `;
+          row.insertAdjacentElement("afterend", formRow);
+        }
+      });
+
+      function submitReview(event) {
+        event.preventDefault();
+        const form = event.target;
+        const action = form.querySelector("select").value;
+        const message = form.querySelector("textarea").value;
+
+        if (!action || !message.trim()) {
+          alert("Please select an action and write a message.");
+          return;
+        }
+
+        alert(`Action: ${action}\nMessage: ${message}`);
+        form.closest("tr").remove(); // Remove the form row after submission
+      }
+    </script> -->
+  </body>
+</html>

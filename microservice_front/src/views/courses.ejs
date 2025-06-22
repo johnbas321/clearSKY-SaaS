@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My courses</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <%- include('bootstrap-resources') -%>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+    <%- include('color-modes') -%> <%- include('header', {user: user}) -%>
+
+    <main>
+      <div class="table-wrapper container">
+        <h4 class="my-4">My courses</h4>
+        <div class="table-responsive">
+          <table
+            class="table table-bordered table-striped align-middle"
+            id="requestTable"
+          >
+            <thead class="table-dark">
+              <tr>
+                <th>Course Name</th>
+                <th>Examination Period</th>
+                <th>Grading Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% Object.values(courses).forEach((course) => { %>
+              <tr>
+                <td><%=course["name"]%></td>
+                <td><%=course["period"]%></td>
+                <td><%=course["status"]%></td>
+                <td>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#gradesModal"
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["name"]%>"
+                    period="<%=course["period"]%>"
+                    >
+                    View my grades
+                  </button>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reviewModal"
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["name"]%>"
+                    period="<%=course["period"]%>"
+                    >
+                    Ask for review
+                  </button>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#statusModal"
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["name"]%>"
+                    period="<%=course["period"]%>"
+                    >
+                    View review status
+                  </button>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="gradesModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalTitle">
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">Total</th>
+                  <td>5</td>
+                </tr>
+                <tr>
+                  <th scope="row">Q1</th>
+                  <td>2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('footer') -%>
+
+    <script src="courses.js"></script>
+  </body>
+</html>

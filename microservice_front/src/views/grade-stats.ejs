@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grade Statistics</title>
+
+    <%- include('bootstrap-resources') -%>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+    <%- include('color-modes') -%> <%- include('header', {user: user}) -%>
+
+    <main class="container">
+      <h4 class="my-4">Available Course Statistics</h4>
+      <table class="table table-hover" id="statsTable">
+        <thead class="table-dark">
+          <tr>
+            <th>Course Name</th>
+            <th>Examination Period</th>
+            <th>Initial Grades Submission</th>
+            <th>Final Grades Submission</th>
+            <th>Statistics</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-id="1">
+            <td>Algorithms</td>
+            <td>January</td>
+            <td>2025-01-10</td>
+            <td>2025-01-20</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-info"
+                data-bs-toggle="modal"
+                data-bs-target="#graphModal"
+              >
+                Graph
+              </button>
+            </td>
+          </tr>
+          <tr data-id="2">
+            <td>Data Structures</td>
+            <td>June</td>
+            <td>2025-06-15</td>
+            <td>2025-06-25</td>
+            <td><button type="button" class="btn btn-info">Graph</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="modal fade" id="graphModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Graph</h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-6">
+                    <div>
+                      <canvas id="myChart"></canvas>
+                    </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                    <script>
+                      const ctx = document.getElementById("myChart");
+
+                      new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                          labels: [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                          ],
+                          datasets: [
+                            {
+                              label: "Grade Distribution",
+                              data: [5, 7, 4, 15, 80, 54, 67, 93, 23, 11],
+                              borderWidth: 1,
+                            },
+                          ],
+                        },
+                        options: {
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                            },
+                          },
+                        },
+                      });
+                    </script>
+                  </div>
+                  <div class="col-6">
+                    <div id="carouselExampleIndicators" class="carousel slide">
+                      <div class="carousel-inner">
+                        <div class="carousel-item active">
+                          <div>
+                            <canvas id="myChart2"></canvas>
+                          </div>
+
+                          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                          <script>
+                            const ctx2 = document.getElementById("myChart2");
+
+                            new Chart(ctx2, {
+                              type: "bar",
+                              data: {
+                                labels: [
+                                  "1",
+                                  "2",
+                                  "3",
+                                  "4",
+                                  "5",
+                                  "6",
+                                  "7",
+                                  "8",
+                                  "9",
+                                  "10",
+                                ],
+                                datasets: [
+                                  {
+                                    label: "Q2 Distribution",
+                                    data: [5, 7, 4, 15, 80, 54, 67, 93, 23, 11],
+                                    borderWidth: 1,
+                                  },
+                                ],
+                              },
+                              options: {
+                                scales: {
+                                  y: {
+                                    beginAtZero: true,
+                                  },
+                                },
+                              },
+                            });
+                          </script>
+                        </div>
+                        <div class="carousel-item">
+                          <div>
+                            <canvas id="myChart3"></canvas>
+                          </div>
+
+                          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                          <script>
+                            const ctx3 = document.getElementById("myChart3");
+
+                            new Chart(ctx3, {
+                              type: "bar",
+                              data: {
+                                labels: [
+                                  "1",
+                                  "2",
+                                  "3",
+                                  "4",
+                                  "5",
+                                  "6",
+                                  "7",
+                                  "8",
+                                  "9",
+                                  "10",
+                                ],
+                                datasets: [
+                                  {
+                                    label: "Q3 Distribution",
+                                    data: [5, 7, 4, 15, 80, 54, 67, 93, 23, 11],
+                                    borderWidth: 1,
+                                  },
+                                ],
+                              },
+                              options: {
+                                scales: {
+                                  y: {
+                                    beginAtZero: true,
+                                  },
+                                },
+                              },
+                            });
+                          </script>
+                        </div>
+                      </div>
+                      <button
+                        class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="prev"
+                      >
+                        <span style="font-size: 2rem; color: black"
+                          >&#10094;</span
+                        >
+                        <span class="visually-hidden">Previous</span>
+                      </button>
+                      <button
+                        class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="next"
+                      >
+                        <span style="font-size: 2rem; color: black"
+                          >&#10095;</span
+                        >
+                        <span class="visually-hidden">Next</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('footer') -%>
+
+    <script>
+      document.querySelectorAll(".clickable-row").forEach((row) => {
+        row.addEventListener("click", () => {
+          const id = row.getAttribute("data-id");
+          const chartRow = document.getElementById(`chart-${id}`);
+          const chartBox = chartRow.querySelector(".chart-container");
+          chartBox.style.display =
+            chartBox.style.display === "block" ? "none" : "block";
+        });
+      });
+    </script>
+  </body>
+</html>

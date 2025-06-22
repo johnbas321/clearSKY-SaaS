@@ -14,7 +14,7 @@ services:
   #   networks:
   #     - clearsky-network
   #   restart: unless-stopped
-  
+
   # Auth Service
   auth:
     build: ./microservice_auth
@@ -71,7 +71,6 @@ services:
     networks:
       - clearsky-network
     restart: unless-stopped
-
 
   # Review Service
   review:
@@ -195,7 +194,7 @@ services:
     networks:
       - clearsky-network
     restart: unless-stopped
-  
+
 networks:
   clearsky-network:
     driver: bridge
