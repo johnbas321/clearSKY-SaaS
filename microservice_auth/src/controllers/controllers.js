@@ -36,6 +36,8 @@ export async function login(req, res, next) {
     await redisClient.set(sessionId, JSON.stringify({
       userId: responseJSON.data.id,
       role: responseJSON.data.role,
+      userName: responseJSON.data.full_name,
+      email: responseJSON.data.email
     }), {
       EX: 86400 // 1 day
     });
