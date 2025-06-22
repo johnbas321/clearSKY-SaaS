@@ -15,7 +15,7 @@ export async function viewRequestStatus(request_id) {
             if (!reply_message){
                 throw new UsageError("Internal Server Error. Should have been a reply here. Please retry.", 500);
             }
-            reply['reply_message'] = reply_message;
+            reply.reply_message = reply_message.reply_message;
         }
         return reply;
     } catch (err){
