@@ -11,14 +11,14 @@ export class User {
     this.email = data.email;
     this.password_salt = data.password_salt;
     this.password_hash = data.password_hash;
-    this.role = data.role || 'STUDENT';
+    this.role = data.role || 'student';
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
   }
 
   // Create new user
   static async create(userData) {
-    const { id, full_name, email, password, role = 'STUDENT' } = userData;
+    const { id, full_name, email, password, role = 'student' } = userData;
 
     const password_salt = crypto.randomBytes(16).toString('hex');
     const derivedKey = await scrypt(password, password_salt, 64);
