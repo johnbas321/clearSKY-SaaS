@@ -6,6 +6,8 @@ import multer from "multer";
 import instructorRoutes from "./routes/instructorRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
+const AUTH_SERVICE_URL = "http://auth:3001";
+
 const upload = multer({ storage: multer.memoryStorage() });
 
 // Setup paths
@@ -118,7 +120,7 @@ app.post("/login", async (req, res) => {
     res.redirect("/error");
     return;
   }
-  const result = await fetch("http://localhost:3001/login", {
+  const result = await fetch(`${AUTH_SERVICE_URL}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
