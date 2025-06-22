@@ -10,7 +10,7 @@ export async function login(req, res, next) {
     const { email, password } = req.body;
 
     // Fetch user from User Management
-    const response = await fetch(`http:/userman:3005/users/email/${encodeURIComponent(email)}`);
+    const response = await fetch(`http://userman:3005/users/email/${encodeURIComponent(email)}`);
     console.log(response)
     if (!response.ok) {
       throw new UsageError('No user exists with this email', 404);
@@ -42,10 +42,12 @@ export async function login(req, res, next) {
       EX: 86400 // 1 day
     });
 
-    // Set cookie
+    // Set cookie with proper domain settings for microservices
     res.cookie('sessionId', sessionId, {
       httpOnly: true,
-      sameSite: 'lax'
+      sameSite: 'lax',
+      maxAge: 86400000, // 1 day in milliseconds
+      // Remove secure: true if not using HTTPS in development
     });
 
     res.json(
