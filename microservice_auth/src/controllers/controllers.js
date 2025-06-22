@@ -48,8 +48,17 @@ export async function login(req, res, next) {
       sameSite: 'lax'
     });
 
-    res.json({ message: 'Logged in successfully' });
-
+    res.json(
+      {
+        message: 'Logged in successfully',
+        user: {
+          id: responseJSON.data.id,
+          role: responseJSON.data.role,
+          fullName: responseJSON.data.full_name,
+          email: responseJSON.data.email
+        }
+      }
+    );
   } catch (err) {
     next(err);
   }
