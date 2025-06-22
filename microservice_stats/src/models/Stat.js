@@ -31,11 +31,19 @@ export class Stat {
     }
 
     static async fetchStatsFromDb(course_id, time_period, grade_state){
-        const query = `SELECT distribution FROM stats WHERE course_id = ? AND time_period = ? AND is_final = ?`;
+        const query = `SELECT distribution, is_final FROM stats WHERE course_id = ? AND time_period = ?`;
         const is_final = (grade_state === "FINAL") ? true : false;
         try {
-            const result = await executeQuery(query, [course_id, time_period, is_final]);
-            return result;
+            const result = await executeQuery(query, [course_id, time_period]);
+            if (result.length === 0){
+                return { result, canFetch: true };
+            }
+            if (result.length !== 0 && result[0].is_final === is_final){
+                return { result, canFetch: false }
+            }
+            if (result.length !== 0 && !result[0].is_final === is_final){
+                return { result, canFetch: true }
+            }
         } catch (err) {
             console.error(err);
             throw err;

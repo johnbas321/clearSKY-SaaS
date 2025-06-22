@@ -12,12 +12,12 @@ export async function createReview(req, res, next) {
       throw new UsageError('Only students can create a review request', 403);
     }
 
-    const { course_name, time_period, grade_state, request_message, instructor_id } = req.body;
-    if (!course_name || !time_period || !grade_state || !request_message || !instructor_id){
+    if (!req.body.course_name || !req.body.time_period || !req.body.grade_state || !req.body.request_message || !req.body.instructor_id){
       throw new UsageError('Empty values provided', 400)
     }
+    const { course_name, time_period, grade_state, request_message, instructor_id } = req.body;
 
-    await Request.create({
+    const request_id = await Request.create({
       course_name,
       time_period,
       student_id,
@@ -25,7 +25,7 @@ export async function createReview(req, res, next) {
       instructor_id,
       request_message
     });
-    res.status(201).json({ message: 'Review Request created successfully' });
+    res.status(201).json({ message: 'Review Request created successfully', request_id: request_id });
   } catch(err){
     next(err);
   }
@@ -86,10 +86,11 @@ export async function createReply(req, res, next) {
       throw new UsageError('Only instructors can reply to review requests', 403);
     }
 
-    const { request_id, student_name, reply_message } = req.body;
-    if (!request_id || !student_name || !reply_message){
+    
+    if (!req.body.request_id || !req.body.student_name || !req.body.reply_message){
       throw new UsageError('Empty values provided', 400)
     }
+    const { request_id, student_name, reply_message } = req.body;
 
     await Reply.create({
       request_id,

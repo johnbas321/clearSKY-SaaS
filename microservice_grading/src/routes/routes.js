@@ -30,7 +30,7 @@ router
 .all(methodNotAllowed);
 
 router
-.route("/upload/inital/confirm")
+.route("/upload/initial/confirm")
 .post(controllers.confirmInitalUpload)
 .all(methodNotAllowed);
 

@@ -112,6 +112,10 @@ export async function confirmInitalUpload(req, res, next) {
     }
     const { course_id, course_name, time_period, grades } = data;
 
+    if (!await Course.canUploadInitialGrades(course_name, time_period)){
+      throw new UsageError('Can not upload initial grades. Grades are finalized for this course;', 404);
+    }
+
     await Course.create({ id: course_id, course_name, instructor_id: user_id, time_period, grade_state: "OPEN"});
 
     await Promise.all(grades.map(async g => {
@@ -161,6 +165,10 @@ export async function confirmFinalUpload(req, res, next) {
       throw new UsageError('Upload session expired', 410);
     }
     const { course_id, course_name, time_period, grades } = data;
+
+    if (!await Course.canUploadFinalGrades(course_name, time_period)){
+      throw new UsageError('You need to upload inital grades first;', 404);
+    }
 
     await Promise.all(grades.map(async g => {
       const gradeFullCourse = g["Τμήμα Τάξης"].trim().split(' ');

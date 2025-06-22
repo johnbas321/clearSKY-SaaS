@@ -14,12 +14,11 @@ export class Reply {
         const query = `
             INSERT INTO replies (request_id, student_name, reply_message)
             VALUES (?, ?, ?)
-            ON DUPLICATE KEY
+            ON DUPLICATE KEY UPDATE
                 reply_message = VALUES(reply_message)
         `;
         try {
             await executeQuery(query, [request_id, student_name, reply_message]);
-            console.log('[DEBUG] replyData:', replyData, typeof replyData);
             return new Reply(replyData);
         } catch (err){
             if (err.code === "ER_DUP_ENTRY"){

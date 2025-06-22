@@ -31,7 +31,7 @@ export class User {
     
     try {
       const result = await executeQuery(query, [id, full_name, email, password_salt, password_hash, role]);
-      const newUser = await User.findById(result.insertId);
+      const newUser = await User.findById(id);
       return newUser;
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
@@ -158,7 +158,7 @@ export class User {
 
   // Convert to JSON (exclude sensitive data)
   toJSON() {
-    const { password_salt, password_hash, ...publicData } = this;
+    const { password_salt, password_hash, ...publicData } = { ...this };
     return publicData;
   }
 

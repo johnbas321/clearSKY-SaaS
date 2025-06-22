@@ -88,10 +88,10 @@ export class Course {
     static async canUploadInitialGrades(courseName, time_period){
         const course = await Course.findByName(courseName, time_period);
         if (!course){
-            throw new Error('Course does not exist');
+            return true;
         }
         const currentState = course.grade_state;
-        if (currentState !== "VOID") {
+        if (currentState !== "OPEN") {
             return false;
         }
         return true;
@@ -100,7 +100,7 @@ export class Course {
     static async canUploadFinalGrades(courseName, time_period){
         const course = await Course.findByName(courseName, time_period);
         if (!course){
-            throw new Error('Course does not exist');
+            return false;
         }
         const currentState = course.grade_state;
         if (currentState !== "OPEN") {
