@@ -5,15 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>clearSKY Login</title>
 
-    <link rel="stylesheet" href="styles.css" />
     <%- include('bootstrap-resources') -%>
+    <style>
+      .form-signin {
+        max-width: 330px;
+        padding: 1rem;
+      }
+
+      .form-signin .form-floating:focus-within {
+        z-index: 2;
+      }
+
+      .form-signin input[type="email"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+    </style>
   </head>
 
   <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
     <%- include('color-modes') -%> <%- include('header', {user: user}) -%>
 
     <main class="form-signin w-100 m-auto">
-      <form>
+      <form action="/login" method="POST">
         <i
           class="bi mb-4 bi-mortarboard"
           style="font-size: 3rem; color: #ff5733"
@@ -25,6 +46,8 @@
             class="form-control"
             id="floatingInput"
             placeholder="name@example.com"
+            name="username"
+            required
           />
           <label for="floatingInput">Email address</label>
         </div>
@@ -34,6 +57,8 @@
             class="form-control"
             id="floatingPassword"
             placeholder="Password"
+            name="password"
+            required
           />
           <label for="floatingPassword">Password</label>
         </div>
@@ -55,42 +80,6 @@
     </main>
 
     <%- include('footer') -%>
-
-    <!-- <script>
-    document.getElementById('loginForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorMsg = document.getElementById('errorMsg');
-
-      if (!email || !password) {
-        errorMsg.textContent = 'Please fill out both fields.';
-        return;
-      }
-
-      errorMsg.textContent = '';
-      alert(`Logging in as: ${email}`);
-
-      try {
-          const res = await fetch('http://localhost:3001/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ email, password }),
-          });
-
-          const data = await res.json();
-          if (res.ok) {
-            alert('Login successful!');
-            window.location.href = '/grade-stats.html'; // You create this page
-          } else {
-            alert(data.message || 'Login failed');
-          }
-        } catch (err) {
-          alert('Network error');
-        }
-    });
-  </script> -->
 
     <script src="script.js"></script>
   </body>

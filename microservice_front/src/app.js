@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
+import instructorRoutes from "./routes/instructorRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -18,16 +20,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  req.authToken = "sample-auth-token"; // Normally read from cookies or headers
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
+app.use("/admin/", adminRoutes);
+
 app.get("/", async (req, res) => {
   res.render("index", { user: "Belesis" });
-});
-
-app.get("/usermanagement", async (req, res) => {
-  res.render("userman", { user: "Belesis" });
 });
 
 app.get("/gradestatistics", async (req, res) => {
@@ -76,6 +76,28 @@ app.get("/courses", async (req, res) => {
     },
   ];
   res.render("courses", { user: "Belesis", courses: data });
+});
+
+app.post("/login", async (req, res) => {
+  const result = await fetch("http://localhost:3001/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: req.body.username,
+      password: req.body.password,
+    }),
+  });
+
+  // console.log(result);
+  const lo = await result.json();
+  console.log(lo);
+  res.json(lo);
+  // res.json({ message: "Logged in successfully saved!" });
+
+  // if fdsaf == instrucotr
+  //   redirect /fdsafs
 });
 
 // post requests

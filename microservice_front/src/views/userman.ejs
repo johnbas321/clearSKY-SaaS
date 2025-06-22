@@ -5,7 +5,6 @@
 
     <title>User Management</title>
 
-    <link rel="stylesheet" href="styles.css" />
     <%- include('bootstrap-resources') -%>
   </head>
 
@@ -26,7 +25,7 @@
         <h1 class="h2">User Management</h1>
       </div>
       <div class="row g-5">
-        <form class="needs-validation" novalidate="">
+        <form action="/admin/createUser" method="POST">
           <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">First name</label>
@@ -34,11 +33,9 @@
                 type="text"
                 class="form-control"
                 id="firstName"
-                placeholder=""
-                value=""
-                required=""
+                name="firstName"
+                required
               />
-              <div class="invalid-feedback">Valid first name is required.</div>
             </div>
             <div class="col-sm-6">
               <label for="lastName" class="form-label">Last name</label>
@@ -46,50 +43,40 @@
                 type="text"
                 class="form-control"
                 id="lastName"
-                placeholder=""
-                value=""
-                required=""
+                name="lastName"
+                required
               />
-              <div class="invalid-feedback">Valid last name is required.</div>
             </div>
             <div class="col-md-12">
               <label for="type" class="form-label">Type</label>
-              <select class="form-select" id="type" required="true">
+              <select class="form-select" id="type" name="role" required>
                 <option value="">Choose...</option>
-                <option value="professor">Professor</option>
+                <option value="instructor">Instructor</option>
+                <option value="student">Student</option>
               </select>
-              <div class="invalid-feedback">
-                Please select a valid user type.
-              </div>
             </div>
-            <div class="col-12">
+            <!-- <div class="col-12">
               <label for="username" class="form-label">Username</label>
-              <div class="input-group has-validation">
+              <div class="input-group">
                 <span class="input-group-text">@</span>
                 <input
                   type="text"
                   class="form-control"
                   id="username"
                   placeholder="Username"
-                  required=""
+                  required
                 />
-                <div class="invalid-feedback">Your username is required.</div>
               </div>
-            </div>
+            </div> -->
             <div class="col-12">
-              <label for="email" class="form-label"
-                >Email
-                <span class="text-body-secondary">(Optional)</span></label
-              >
+              <label for="email" class="form-label">Email</label>
               <input
                 type="email"
                 class="form-control"
                 id="email"
+                name="email"
                 placeholder="you@example.com"
               />
-              <div class="invalid-feedback">
-                Please enter a valid email address for shipping updates.
-              </div>
             </div>
             <div class="col-sm-12">
               <label for="password" class="form-label">Password</label>
@@ -97,24 +84,19 @@
                 type="password"
                 class="form-control"
                 id="password"
-                placeholder=""
-                value=""
-                required=""
+                name="password"
+                required
               />
-              <div class="invalid-feedback">Password is required.</div>
             </div>
-
             <div class="col-sm-12">
               <label for="id" class="form-label">ID</label>
               <input
                 type="text"
                 class="form-control"
                 id="id"
-                placeholder=""
-                value=""
-                required=""
+                name="id"
+                required
               />
-              <div class="invalid-feedback">ID is required.</div>
             </div>
           </div>
           <hr class="my-4" />
@@ -125,6 +107,7 @@
               </button>
             </div>
             <div class="col-sm-6">
+              <!-- This doesn't work yet -->
               <button class="w-100 btn btn-secondary btn-lg" type="submit">
                 Change Password
               </button>
