@@ -19,7 +19,8 @@ export class Course {
             INSERT INTO courses (id, course_name, instructor_id, time_period, grade_state)
             VALUES(?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
-                grade_state = VALUES(grade_state)
+                grade_state = VALUES(grade_state),
+                final_grades_at = CURRENT_DATE
         `;
         try {
             const result = await executeQuery(query, [id, course_name, instructor_id, time_period, grade_state]);
