@@ -14,10 +14,7 @@ export async function getStats(req, res, next) {
     }
     let {result, canFetch} = await Stat.fetchStatsFromDb(course_id, time_period, grade_state);
     if (result.length === 0){
-      if (!canFetch){
-        throw new UsageError("Trying to fetch final stats for an open course",403);
-      }
-      console.log("Fetching initial from grade microservice...");
+      console.log("Fetching from grade microservice...");
       result = await fetchStatsFromGrades(course_id, time_period, grade_state);
       await Stat.create({ course_id, time_period, distribution: result, is_final : false })
     } else{

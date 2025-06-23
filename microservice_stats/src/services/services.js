@@ -18,6 +18,9 @@ export async function fetchStatsFromGrades(course_id, time_period, grade_state) 
             console.error(`Grading error: ${response.status} - ${result.message}`);
             throw new UsageError(`Internal communication error: ${result.message}.`, 500);
         }
+        if (Object.keys(result).length === 0){
+            throw new UsageError('Can not find the specific grades requested.', 404);
+        }
         return result
     } catch (err){
         throw err;
