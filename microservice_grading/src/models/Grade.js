@@ -41,7 +41,8 @@ export class Grade {
             if (result.length === 0) {
                 return null;
             }
-            return parseInt(result[0].total_questions);
+            console.log(`FINDTOTAL: ${result}`);
+            return result[0].total_questions;
         } catch (err){
             console.error(err);
             throw err;
@@ -64,19 +65,20 @@ export class Grade {
 
     static async aggregateGrades(course_id, time_period, is_final){
         const total_questions =  parseInt(await Grade.findTotalQuestion(course_id, time_period));
+        const is_final_int = is_final ? 1 : 0;
+        console.log('[DEBUG] Params:', [course_id, time_period, is_final_int, total_questions]);
         if(!total_questions){
             throw new Error('No grade found');
         }
         let query_list = [];
-        console.log(is_final)
         try{
-            query_list.push(executeQuery(`SELECT 'total' as question, grade, COUNT(*) AS count FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ? GROUP BY grade ORDER BY grade`,[course_id, time_period, is_final]));
+            query_list.push(executeQuery(`SELECT 'total' as question, grade, COUNT(*) AS count FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ? GROUP BY grade ORDER BY grade`,[course_id, time_period, is_final_int]));
             for (let index = 1; index < total_questions + 1; index++) {
-                query_list.push(executeQuery(createQuestionQuery(index),[course_id, time_period, is_final]));
+                query_list.push(executeQuery(createQuestionQuery(index),[course_id, time_period, is_final_int]));
             }
             const result = await Promise.all(query_list);
             const distribution = {};
-            const ALL_GRADES = Array.from({ length: 11 }, (_, i) => String(i));
+            const ALL_GRADES = Array.from({ length: total_questions+1 }, (_, i) => String(i));
             console.log(result)
             for (const res of result) {
               if (res.length === 0) continue;

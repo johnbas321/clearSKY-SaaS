@@ -122,7 +122,7 @@ export async function confirmInitalUpload(req, res, next) {
       const gradeFullCourse = g["Τμήμα Τάξης"].trim().split(' ');
       const grade_course_id = parseInt(gradeFullCourse.pop().replace(/^\(+|\)+$/g, ''));
       const grade_course_name = gradeFullCourse.join(' ').trim();
-      if (grade_course_id !== course_id || grade_course_name !== course_name || g["Περίοδος δήλωσης"] !== time_period ){
+      if (grade_course_id !== course_id || grade_course_name !== course_name || convertGreekLetters(g["Περίοδος δήλωσης"]) !== time_period ){
         throw new UsageError('Invalid or incomplete Excel data.', 400);
       }
       const student_id = parseInt(g["Αριθμός Μητρώου"]);
@@ -174,7 +174,7 @@ export async function confirmFinalUpload(req, res, next) {
       const gradeFullCourse = g["Τμήμα Τάξης"].trim().split(' ');
       const grade_course_id = parseInt(gradeFullCourse.pop().replace(/^\(+|\)+$/g, ''));
       const grade_course_name = gradeFullCourse.join(' ').trim();
-      if (grade_course_id !== course_id || grade_course_name !== course_name || g["Περίοδος δήλωσης"] !== time_period ){
+      if (grade_course_id !== course_id || grade_course_name !== course_name || convertGreekLetters(g["Περίοδος δήλωσης"]) !== time_period ){
         throw new UsageError('Invalid or incomplete Excel data.', 400);
       }
       const student_id = parseInt(g["Αριθμός Μητρώου"]);
@@ -285,12 +285,20 @@ function normalizePeriod(periodStr) {
   const [yearRange, season] = periodStr.split(' ');
 
   const seasonMap = {
-    'Χειμερινή': 'ΧΕΙΜ',
-    'Εαρινή': 'ΕΑΡ'
+    'Χειμερινή': 'XEIM',
+    'Εαρινή': 'EAR'
   };
 
   const normalizedSeason = seasonMap[season] || season.toUpperCase();
   const startYear = yearRange.split('-')[0];
 
   return `${yearRange} ${normalizedSeason} ${startYear}`;
+}
+
+function convertGreekLetters(time_period){
+  const replacements ={
+    'ΧΕΙΜ' : 'XEIM',
+    'ΕΑΡ' : 'EAR',
+  };
+  return time_period.replace(/ΧΕΙΜ|ΕΑΡ/g, match => replacements[match]);
 }
