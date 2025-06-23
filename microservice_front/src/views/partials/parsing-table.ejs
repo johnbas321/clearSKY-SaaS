@@ -2,15 +2,16 @@
   <tbody>
     <tr>
       <th scope="row">Course</th>
-      <td><%= courseName %></td>
+      <td><%= course_name %></td>
     </tr>
     <tr>
       <th scope="row">Exam Period</th>
-      <td><%= examPeriod %></td>
+      <td><%= time_period %></td>
     </tr>
     <tr>
       <th scope="row">N of grades</th>
-      <td><%= numberOfGrades %></td>
+      <td><%= count %></td>
     </tr>
   </tbody>
 </table>
+<input type="hidden" name="cache_id" value="<%= cache_id %>" />
