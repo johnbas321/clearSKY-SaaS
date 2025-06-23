@@ -11,8 +11,13 @@ export const checkLoggedIn = (req, res, next) => {
 
 export const checkNotLoggedIn = (req, res, next) => {
   if (req.session.isLoggedIn) {
+    const user = {
+      name: req.session.name,
+      email: req.session.email,
+      role: req.session.role,
+    };
     res.render("error", {
-      user: req.session.name,
+      user: user,
       error: "You are already logged in",
     });
     return;

@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { AUTH_SERVICE_URL, GRADES_SERVICE_URL } from "../app.js";
+import { GRADES_SERVICE_URL } from "../app.js";
 import FormData from "form-data";
 import axios from "axios";
 
