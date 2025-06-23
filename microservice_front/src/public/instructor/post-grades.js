@@ -15,7 +15,6 @@ document
     const fileInput = document.getElementById("file");
     const file = fileInput.files[0];
 
-    // need to have init and final here
     if (file) {
       formData.append("file", file);
 
@@ -43,10 +42,24 @@ document
 
 document.getElementById("confirmBtn").addEventListener("click", async () => {
   try {
-    const res = await fetch(`/upload-${gradesState}-confirm`, {
+    console.log(document.querySelector("#parsingModalBody input").value);
+    const res = await fetch(`/instructor/upload-${gradesState}-confirm`, {
       method: "POST",
-      body: formData,
+      headers: { "Content-Type": "application/json" },
+      body: {
+        cache_id: document.querySelector("#parsingModalBody input").value,
+      },
     });
+    // axios
+    //   .post("/instructor/upload-init-confirm", {
+    //     cache_id: document.querySelector("#parsingModalBody input").value,
+    //   })
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
 
     const result = await res.json();
     alert(result.message);
