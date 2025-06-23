@@ -76,9 +76,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   });
 });
 
-router.post("/upload-init-confirm", async (req, res) => {
-  console.log(req.body);
-
+router.post("/upload-init-confirm", express.json(), async (req, res) => {
   res.json({ message: "Data successfully saved!" });
 });
 

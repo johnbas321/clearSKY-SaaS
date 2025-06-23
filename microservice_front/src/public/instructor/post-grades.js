@@ -42,13 +42,12 @@ document
 
 document.getElementById("confirmBtn").addEventListener("click", async () => {
   try {
-    console.log(document.querySelector("#parsingModalBody input").value);
+    let cacheId = document.querySelector("#parsingModalBody input").value;
+
     const res = await fetch(`/instructor/upload-${gradesState}-confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: {
-        cache_id: document.querySelector("#parsingModalBody input").value,
-      },
+      body: JSON.stringify({ cache_id: cacheId }),
     });
     // axios
     //   .post("/instructor/upload-init-confirm", {
