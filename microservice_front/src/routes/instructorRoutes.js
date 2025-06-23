@@ -28,6 +28,7 @@ router.get("/upload-final", async (req, res) => {
 router.post("/upload", upload.single("file"), async (req, res) => {
   const file = req.file;
 
+  console.log(file);
   if (!file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -42,6 +43,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     method: "POST",
     body: formData,
     headers: {
+      ...formData.getHeaders(),
       cookie: req.headers.cookie || "",
     },
     credentials: "include",
@@ -71,7 +73,7 @@ router.post("/upload-init-confirm", upload.single("file"), async (req, res) => {
   const file = req.file;
 
   if (!file) {
-    return res.status(400).json({ error: "No file uploaded" });
+    return res.status(400).json({ error: "No file uploaded in frontend" });
   }
 
   const parsedData = {

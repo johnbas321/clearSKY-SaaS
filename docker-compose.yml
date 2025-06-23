@@ -1,19 +1,19 @@
 services:
   # Frontend Service
-  frontend:
-    build: ./microservice_front
-    container_name: clearsky-frontend
-    ports:
-      - "80:3000"
-    depends_on:
-      - auth
-      - userman
-      - grading
-      - review
-      - stats
-    networks:
-      - clearsky-network
-    restart: unless-stopped
+  # frontend:
+  #   build: ./microservice_front
+  #   container_name: clearsky-frontend
+  #   ports:
+  #     - "80:3000"
+  #   depends_on:
+  #     - auth
+  #     - userman
+  #     - grading
+  #     - review
+  #     - stats
+  #   networks:
+  #     - clearsky-network
+  #   restart: unless-stopped
 
   # Auth Service
   auth:

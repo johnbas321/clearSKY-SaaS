@@ -53,6 +53,7 @@ app.get("/login", checkNotLoggedIn, async (req, res) => {
 });
 
 app.get("/logout", checkLoggedIn, async (req, res) => {
+  // check tou basdeki oti epistrefei http 200 kai epistrefw me empty cookie
   req.session.destroy((err) => {
     if (err) {
       console.log(err);
@@ -121,9 +122,14 @@ app.post("/login", checkNotLoggedIn, async (req, res) => {
     credentials: "include",
   });
 
+  const result_json = await result.json();
+  if (!result.ok) {
+    const { message } = result_json;
+    res.render("error", { user: "", error: message });
+    return;
+  }
+
   const setCookie = result.headers.get("set-cookie");
-  const match = result.headers.get("set-cookie").match(/sessionId=([^;]+)/);
-  const sessionId = match ? decodeURIComponent(match[1]) : null;
   console.log(setCookie);
   // Note: In Node.js, fetch does not automatically handle cookies between services.
   // You would need to manually forward cookies if you want to maintain the session across services.
@@ -132,19 +138,13 @@ app.post("/login", checkNotLoggedIn, async (req, res) => {
     res.setHeader("set-cookie", setCookie);
   }
 
-  const result_json = await result.json();
-
-  if (!result.ok) {
-    const { message } = result_json;
-    res.render("error", { user: "", error: message });
-  }
-
   const { user } = result_json;
 
+  console.log(user);
   req.session.isLoggedIn = true;
   req.session.email = user.email;
   req.session.name = user.fullName;
-  req.session.role = user.role.toLowerCase();
+  req.session.role = user.role;
 
   res.redirect("/gradestatistics");
 });
