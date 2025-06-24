@@ -36,6 +36,43 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function setModalTitleFromButton3(btn) {
+  const courseName = btn.getAttribute("name");
+  const period = btn.getAttribute("period");
+  const modalTitle = document.getElementById("statusModalTitle");
+  if (modalTitle) {
+    modalTitle.textContent = `Review Request Status | ${courseName} (${period})`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .querySelectorAll('.review-btn[data-bs-target="#statusModal"]')
+    .forEach((btn) => {
+      btn.addEventListener("click", async function () {
+        setModalTitleFromButton3(btn); // Set modal title on button click
+
+        try {
+          const response = await fetch(`/student/review-status`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course_name: btn.getAttribute("name"),
+              time_period: btn.getAttribute("period"),
+            }),
+          });
+
+          console.log("3");
+          const data = await response.json();
+
+          document.getElementById("statusModalBody").innerHTML = data.html;
+        } catch (error) {
+          alert("Error:", error);
+        }
+      });
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelectorAll('.review-btn[data-bs-target="#gradesModal"]')

@@ -190,4 +190,39 @@ router.post("/upload-final-confirm", express.json(), async (req, res) => {
   res.json(result_json);
 });
 
+router.post("/review-request/reply", express.json(), async (req, res) => {
+  console.log(req.body);
+  console.log(req.session.name);
+  const result = await fetch(`${REVIEW_SERVICE_URL}/reviews/new/reply`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: req.headers.cookie || "",
+    },
+    body: JSON.stringify({
+      request_id: req.body.request_id,
+      student_name: req.session.name,
+      reply_message: req.body.reply_message,
+    }),
+  });
+
+  const result_json = await result.json();
+  console.log(result_json);
+  if (!result.ok) {
+    const { message } = result_json;
+    const user = {
+      name: req.session.name,
+      email: req.session.email,
+      role: req.session.role,
+    };
+    res.render("error", { user: user, error: message });
+    return;
+  }
+
+  // res.send(
+  //   `<script>alert('Review request reply submitted successfully!');</script>`
+  // );
+  res.json(result_json);
+});
+
 export default router;

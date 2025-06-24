@@ -162,21 +162,22 @@ app.post("/login", checkNotLoggedIn, async (req, res) => {
   req.session.email = user.email;
   req.session.name = user.fullName;
   req.session.role = user.role;
+  req.session.user_id = user.id;
 
   res.redirect("/gradestatistics");
 });
 
 // post requests
 
-app.post(
-  "/submit-review-response",
-  upload.single("attachment"),
-  async (req, res) => {
-    console.log(req.body);
-    console.log(req.file);
-    res.json({ message: "Response successfully saved!" });
-  }
-);
+// app.post(
+//   "/submit-review-response",
+//   upload.single("attachment"),
+//   async (req, res) => {
+//     console.log(req.body);
+//     console.log(req.file);
+//     res.json({ message: "Response successfully saved!" });
+//   }
+// );
 
 app.post("/grade-stats/graph", express.json(), async (req, res) => {
   const user = {

@@ -72,32 +72,33 @@
             <form id="reviewForm">
               <input type="hidden" name="reviewID" id="reviewID" />
               <div class="form-floating mb-3">
-                <textarea class="form-control" id="studentMessage" style="height: 100px" disabled></textarea>
-                <label for="studentMessage">Student message</label>
+              <textarea class="form-control" id="studentMessage" style="height: 100px" disabled></textarea>
+              <label for="studentMessage">Student message</label>
               </div>
               <div class="mb-3">
-                <label class="form-label">Action</label>
-                <select name="action" class="form-select" required>
-                  <option value="">Select...</option>
-                  <option value="approve">Approve</option>
-                  <option value="reject">Reject</option>
-                  <option value="clarify">Request more info</option>
-                </select>
+              <label class="form-label">Action</label>
+              <select name="action" class="form-select">
+                <option value="">Select...</option>
+                <option value="approve">Approve</option>
+                <option value="reject">Reject</option>
+                <option value="clarify">Request more info</option>
+              </select>
               </div>
               <div class="mb-3">
-                <label class="form-label">Message (optional)</label>
-                <textarea
-                  name="message"
-                  class="form-control"
-                  rows="3"
-                ></textarea>
+              <label class="form-label" >Message (optional)</label>
+              <textarea
+                name="message"
+                class="form-control"
+                rows="3"
+                id="reply_message"
+              ></textarea>
               </div>
               <div class="mb-3">
-                <label class="form-label">Attachment (optional)</label>
-                <input name="attachment" class="form-control" type="file" />
+              <label class="form-label">Attachment (optional)</label>
+              <input name="attachment" class="form-control" type="file" />
               </div>
               <button type="submit" class="btn btn-success">
-                Submit Response
+              Submit Response
               </button>
             </form>
           </div>

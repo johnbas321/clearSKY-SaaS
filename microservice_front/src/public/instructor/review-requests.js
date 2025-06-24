@@ -50,9 +50,18 @@ document.getElementById("reviewForm").addEventListener("submit", function (e) {
 
   const formData = new FormData(this); // Get form data
 
-  fetch("/submit-review-response", {
+  const body = JSON.stringify({
+    request_id: document.getElementById("reviewID").value,
+    reply_message: document.getElementById("reply_message").value,
+  });
+  console.log(body);
+
+  fetch("/instructor/review-request/reply", {
     method: "POST",
-    body: new FormData(this),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: body,
   })
     .then((response) => response.json()) // assuming the backend returns JSON
     .then((data) => {
