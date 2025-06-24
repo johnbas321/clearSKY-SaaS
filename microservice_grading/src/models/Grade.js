@@ -41,7 +41,6 @@ export class Grade {
             if (result.length === 0) {
                 return null;
             }
-            console.log(`FINDTOTAL: ${result}`);
             return result[0].total_questions;
         } catch (err){
             console.error(err);
@@ -66,7 +65,6 @@ export class Grade {
     static async aggregateGrades(course_id, time_period, is_final){
         const total_questions =  parseInt(await Grade.findTotalQuestion(course_id, time_period));
         const is_final_int = is_final ? 1 : 0;
-        console.log('[DEBUG] Params:', [course_id, time_period, is_final_int, total_questions]);
         if(!total_questions){
             throw new Error('No grade found');
         }
@@ -79,7 +77,6 @@ export class Grade {
             const result = await Promise.all(query_list);
             const distribution = {};
             const ALL_GRADES = Array.from({ length: total_questions+1 }, (_, i) => String(i));
-            console.log(result)
             for (const res of result) {
               if (res.length === 0) continue;
             
@@ -94,7 +91,6 @@ export class Grade {
                 distribution[question][grade] = count;
               });
             }
-            console.log(distribution);
             return distribution;
         } catch (err){
             console.error(err);
