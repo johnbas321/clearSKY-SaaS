@@ -13,11 +13,11 @@ import {
 } from "./middleware/userHandler.js";
 import { logRequests } from "./middleware/logging.js";
 
-export const AUTH_SERVICE_URL = "http://localhost:3001"; // "http://auth:3001";
-export const GRADES_SERVICE_URL = "http://localhost:3002"; // "http://grading:3002";
-export const REVIEW_SERVICE_URL = "http://localhost:3003"; // "http://review":3003";
-export const STATS_SERVICE_URL = "http://localhost:3004"; // "http://stats":3003";
-export const USERMAN_SERVICE_URL = "http://localhost:3005"; // "http://userman:3005";
+export const AUTH_SERVICE_URL = "http://auth:3001"; //"http://localhost:3001"; // "http://auth:3001";
+export const GRADES_SERVICE_URL = "http://grading:3002"; // "http://localhost:3002"; // "http://grading:3002";
+export const REVIEW_SERVICE_URL = "http://review:3003"; //"http://localhost:3003"; // "http://review":3003";
+export const STATS_SERVICE_URL = "http://stats:3003"; //"http://localhost:3004"; // "http://stats":3003";
+export const USERMAN_SERVICE_URL = "http://userman:3005"; //"http://localhost:3005"; // "http://userman:3005";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -209,14 +209,18 @@ app.post("/grade-stats/graph", express.json(), async (req, res) => {
     return;
   }
 
-  res.render("partials/stats-graphs", {distributions: result_json}, (err, html) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Error rendering modal content");
+  res.render(
+    "partials/stats-graphs",
+    { distributions: result_json },
+    (err, html) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error rendering modal content");
+      }
+      //console.log(html)
+      res.json({ html });
     }
-    //console.log(html)
-    res.json({ html });
-  });
+  );
 });
 
 app.get("/test", async (req, res) => {
