@@ -17,6 +17,7 @@ export class Stat {
             VALUES (?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 distribution = VALUES(distribution),
+                is_final = VALUES(is_final),
                 updated_at = CURRENT_TIMESTAMP
         `;
         try {
@@ -34,17 +35,23 @@ export class Stat {
         const query = `SELECT distribution, is_final FROM stats WHERE course_id = ? AND time_period = ?`;
         const is_final = (grade_state === "FINAL") ? true : false;
         try {
-            console.log(is_final)
             const result = await executeQuery(query, [course_id, time_period]);
             if (result.length === 0){
                 return { result, canFetch: true };
             }
-            if (result.length !== 0 && result[0].is_final === is_final){
+            if (result.length !== 0 && result[0].is_final && is_final){
                 return { result, canFetch: false }
             }
-            if (result.length !== 0 && result[0].is_final !== is_final){
+            if (result.length !== 0 && result[0].is_final && !is_final){
+                return { result, canFetch: false }
+            }
+            if (result.length !== 0 && !result[0].is_final && is_final){
                 return { result, canFetch: true }
             }
+            if (result.length !== 0 && !result[0].is_final && !is_final){
+                return { result, canFetch: true }
+            }
+            //return { result, canFetch: true }
         } catch (err) {
             console.error(err);
             throw err;

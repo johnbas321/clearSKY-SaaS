@@ -40,6 +40,7 @@ export async function getGradesPerCourse(student_id, course_id, time_period) {
 
 export async function getGradesForStatistics(course_id, time_period, is_final) {
     const is_final_int = is_final? 1 : 0;
+    console.log(is_final_int);
     const query = `
         SELECT
             grade,
