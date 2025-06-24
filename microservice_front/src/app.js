@@ -13,7 +13,8 @@ import {
 import { logRequests } from "./middleware/logging.js";
 
 export const AUTH_SERVICE_URL = "http://localhost:3001"; //"http://auth:3001";
-export const GRADES_SERVICE_URL = "http://localhost:3002"; //"http://auth:3001";
+export const GRADES_SERVICE_URL = "http://localhost:3002"; //"http://grading:3002";
+export const USERMAN_SERVICE_URL = "http://localhost:3005"; //"http://userman:3005";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -63,13 +64,29 @@ app.get("/logout", checkLoggedIn, async (req, res) => {
   });
 });
 
-app.get("/gradestatistics", async (req, res) => {
+app.get("/gradestatistics", checkLoggedIn, async (req, res) => {
   const user = {
     name: req.session.name,
     email: req.session.email,
     role: req.session.role,
   };
-  res.render("grade-stats", { user: user });
+
+  const result = await fetch(`${GRADES_SERVICE_URL}/grades/courses`, {
+    method: "GET",
+    headers: {
+      Cookie: req.headers.cookie,
+    },
+  });
+
+  const result_json = await result.json();
+  if (!result.ok) {
+    console.log(result_json);
+    const { message } = result_json;
+    res.render("error", { user: user, error: message });
+    return;
+  }
+
+  res.render("grade-stats", { user: user, data: result_json });
 });
 
 app.get("/review-requests", async (req, res) => {

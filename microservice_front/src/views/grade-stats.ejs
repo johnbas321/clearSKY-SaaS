@@ -24,11 +24,20 @@
           </tr>
         </thead>
         <tbody>
+          <!-- <% for (let i = 0; i < data.length; i++) { %> -->
+          <% data.forEach(course => { %>
           <tr data-id="1">
-            <td>Algorithms</td>
-            <td>January</td>
-            <td>2025-01-10</td>
-            <td>2025-01-20</td>
+            <td><% course.course_name %></td>
+            <td><% course.time_period %></td>
+            <td>
+              <%= course.initial_grades_at ? new
+              Date(course.initial_grades_at).toLocaleDateString('en-GB') : "-"
+              %>
+            </td>
+            <td>
+              <%= course.final_grades_at ? new
+              Date(course.final_grades_at).toLocaleDateString('en-GB') : "-" %>
+            </td>
             <td>
               <button
                 type="button"
@@ -40,6 +49,7 @@
               </button>
             </td>
           </tr>
+          <% }); %>
           <tr data-id="2">
             <td>Data Structures</td>
             <td>June</td>

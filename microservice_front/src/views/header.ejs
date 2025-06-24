@@ -17,6 +17,7 @@
         <ul
           class="nav col-12 col-lg-auto my-2 mx-auto justify-content-center my-md-0 text-small"
         >
+          <% if (user) { %>
           <li class="text-center">
             <a href="#" class="nav-link text-white">
               <i
@@ -26,8 +27,7 @@
               Grade Stats
             </a>
           </li>
-
-          <% if (user.role === "instructor") { %>
+          <% } %> <% if (user.role === "instructor") { %>
           <li class="text-center">
             <a href="/instructor/upload-init" class="nav-link text-white">
               <i
@@ -47,9 +47,19 @@
               Upload Final Grades
             </a>
           </li>
+          <% } %> <% if (user.role === "institution_admin") { %>
+          <li class="text-center">
+            <a href="/admin/usermanagement" class="nav-link text-white">
+              <i
+                class="bi d-block mx-auto mb-1 bi-people"
+                style="font-size: 1.5rem"
+              ></i>
+              User Management
+            </a>
+          </li>
           <% } %>
 
-          <li class="text-center">
+          <!-- <li class="text-center">
             <a href="#" class="nav-link text-white">
               <i
                 class="bi d-block mx-auto mb-1 bi-list-check"
@@ -57,7 +67,7 @@
               ></i>
               Review Requests
             </a>
-          </li>
+          </li> -->
         </ul>
 
         <% if (user) { %>
