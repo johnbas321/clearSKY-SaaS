@@ -202,20 +202,20 @@ app.post("/grade-stats/graph", express.json(), async (req, res) => {
   });
 
   const result_json = await result.json();
-  console.log(result_json);
+  //console.log(result_json);
   if (!result.ok) {
     const { message } = result_json;
     res.render("error", { user: user, error: message });
     return;
   }
 
-  res.render("partials/stats-graphs", result_json, (err, html) => {
+  res.render("partials/stats-graphs", {distributions: result_json}, (err, html) => {
     if (err) {
       console.error(err);
       return res.status(500).send("Error rendering modal content");
     }
-
-    res.send({ html });
+    //console.log(html)
+    res.json({ html });
   });
 });
 

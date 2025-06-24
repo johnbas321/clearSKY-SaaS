@@ -70,6 +70,19 @@ export class Request {
             throw err;
         }
     }
+    static async findIdByCourseAndStudent(course_name, time_period, student_id) {
+        const query = 'SELECT request_id FROM requests WHERE course_name = ? AND time_period = ? and student_id = ?';
+        try {
+            const result = await executeQuery(query, [course_name, time_period, student_id]);
+            if (result.length === 0) {
+                return null;
+            }
+            return parseInt(result[0].request_id);
+        } catch (err){
+            console.error(err);
+            throw err;
+        }
+    }
     static async getRequestActions(request_id, grade_state){
         try {
             const request = await Request.findById(request_id);
