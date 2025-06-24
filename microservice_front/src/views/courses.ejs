@@ -33,7 +33,7 @@
                 <td><%=course["course_name"]%></td>
                 <td><%=course["time_period"]%></td>
                 <td><%=course["grade_state"]%></td>
-                <td>
+                <td class="d-flex justify-content-between">
                   <button
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
@@ -60,7 +60,7 @@
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#statusModal"
-                    course-id="<%=course["course_id"]%>"
+                    course-id="<%=course["id"]%>"
                     course="<%=course["course_name"]%>"
                     period="<%=course["time_period"]%>"
                     >
@@ -70,9 +70,10 @@
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#graphModal"
-                    course-id="<%=course["course_id"]%>"
+                    course-id="<%=course["id"]%>"
                     course="<%=course["course_name"]%>"
                     period="<%=course["time_period"]%>"
+                    course-final="<%=course["grade_state"]%>"
                     >
                     View course stats
                   </button>
@@ -138,9 +139,34 @@
         </div>
       </div>
     </div>
-
+    <div class="modal fade" id="graphModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5">Graph</h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid" id="graphs"></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     <%- include('footer') -%>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="courses.js"></script>
   </body>
 </html>
