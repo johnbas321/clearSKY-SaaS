@@ -11,7 +11,7 @@ export async function viewRequestStatus(course_name, time_period, student_id) {
         }
         reply = { request_message: request.request_message, request_state: request.request_state, created_at: request.created_at };
         if (request.request_state === "CLOSED"){
-            const reply_message = await Reply.findByRequstId(request_id);
+            const reply_message = await Reply.findByCourseAndStudent(course_name, time_period, student_id);
             if (!reply_message){
                 throw new UsageError("Internal Server Error. Should have been a reply here. Please retry.", 500);
             }
