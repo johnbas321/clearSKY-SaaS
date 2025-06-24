@@ -19,7 +19,7 @@
         >
           <% if (user) { %>
           <li class="text-center">
-            <a href="#" class="nav-link text-white">
+            <a href="/gradestatistics" class="nav-link text-white">
               <i
                 class="bi d-block mx-auto mb-1 bi-bar-chart"
                 style="font-size: 1.5rem"
@@ -57,17 +57,17 @@
               User Management
             </a>
           </li>
-          <% } %>
-
-          <!-- <li class="text-center">
-            <a href="#" class="nav-link text-white">
+          <% } %> <% if (user.role === "student") { %>
+          <li class="text-center">
+            <a href="/student/courses" class="nav-link text-white">
               <i
-                class="bi d-block mx-auto mb-1 bi-list-check"
+                class="bi d-block mx-auto mb-1 bi-emoji-expressionless-fill"
                 style="font-size: 1.5rem"
               ></i>
-              Review Requests
+              My courses
             </a>
-          </li> -->
+          </li>
+          <% } %>
         </ul>
 
         <% if (user) { %>

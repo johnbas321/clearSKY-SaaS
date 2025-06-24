@@ -1,0 +1,14 @@
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">Total</th>
+      <td><%= grade %></td>
+    </tr>
+    <% for(let i=1; i<Object.keys(grades_per_question).length + 1; i++) { %>
+    <tr>
+      <th scope="row"><%= 'Q' + i.toString() %></th>
+      <td><%= Object.values(grades_per_question)[i-1] %></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

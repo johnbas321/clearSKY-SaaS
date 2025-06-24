@@ -24,11 +24,10 @@
           </tr>
         </thead>
         <tbody>
-          <!-- <% for (let i = 0; i < data.length; i++) { %> -->
-          <% data.forEach(course => { %>
+          <% data.forEach(function(course) { %>
           <tr data-id="1">
-            <td><% course.course_name %></td>
-            <td><% course.time_period %></td>
+            <td><%= course.course_name %></td>
+            <td><%= course.time_period %></td>
             <td>
               <%= course.initial_grades_at ? new
               Date(course.initial_grades_at).toLocaleDateString('en-GB') : "-"
@@ -44,19 +43,16 @@
                 class="btn btn-info"
                 data-bs-toggle="modal"
                 data-bs-target="#graphModal"
+                course-id="<%= course.id %>"
+                course-name="<%= course.course_name %>"
+                course-period="<%= course.time_period %>"
+                course-final="<%= course.final_grades_at %>"
               >
                 Graph
               </button>
             </td>
           </tr>
           <% }); %>
-          <tr data-id="2">
-            <td>Data Structures</td>
-            <td>June</td>
-            <td>2025-06-15</td>
-            <td>2025-06-25</td>
-            <td><button type="button" class="btn btn-info">Graph</button></td>
-          </tr>
         </tbody>
       </table>
 
@@ -64,7 +60,7 @@
         <div class="modal-dialog modal-xl modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Graph</h1>
+              <h1 class="modal-title fs-5">Graph</h1>
               <button
                 type="button"
                 class="btn-close"
@@ -250,16 +246,6 @@
 
     <%- include('footer') -%>
 
-    <script>
-      document.querySelectorAll(".clickable-row").forEach((row) => {
-        row.addEventListener("click", () => {
-          const id = row.getAttribute("data-id");
-          const chartRow = document.getElementById(`chart-${id}`);
-          const chartBox = chartRow.querySelector(".chart-container");
-          chartBox.style.display =
-            chartBox.style.display === "block" ? "none" : "block";
-        });
-      });
-    </script>
+    <script src="grade-stats.js"></script>
   </body>
 </html>

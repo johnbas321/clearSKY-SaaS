@@ -76,30 +76,62 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   });
 });
 
-router.post("/upload-init-confirm", async (req, res) => {
-  console.log(req.body);
+router.post("/upload-init-confirm", express.json(), async (req, res) => {
+  const result = await fetch(
+    `${GRADES_SERVICE_URL}/grades/upload/initial/confirm`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: req.headers.cookie || "",
+      },
+      body: JSON.stringify(req.body),
+    }
+  );
 
-  res.json({ message: "Data successfully saved!" });
+  const result_json = await result.json();
+  console.log(result_json);
+  if (!result.ok) {
+    const { message } = result_json;
+    const user = {
+      name: req.session.name,
+      email: req.session.email,
+      role: req.session.role,
+    };
+    res.render("error", { user: user, error: message });
+    return;
+  }
+
+  res.json(result_json);
 });
 
-router.post(
-  "/upload-final-confirm",
-  upload.single("file"),
-  async (req, res) => {
-    const file = req.file;
-
-    if (!file) {
-      return res.status(400).json({ error: "No file uploaded" });
+router.post("/upload-final-confirm", express.json(), async (req, res) => {
+  const result = await fetch(
+    `${GRADES_SERVICE_URL}/grades/upload/final/confirm`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: req.headers.cookie || "",
+      },
+      body: JSON.stringify(req.body),
     }
+  );
 
-    const parsedData = {
-      courseName: "Math 101",
-      examPeriod: "June 2025",
-      numberOfGrades: 42,
+  const result_json = await result.json();
+  console.log(result_json);
+  if (!result.ok) {
+    const user = {
+      name: req.session.name,
+      email: req.session.email,
+      role: req.session.role,
     };
-
-    res.json({ message: "Data successfully saved!" });
+    const { message } = result_json;
+    res.render("error", { user: user, error: message });
+    return;
   }
-);
+
+  res.json(result_json);
+});
 
 export default router;

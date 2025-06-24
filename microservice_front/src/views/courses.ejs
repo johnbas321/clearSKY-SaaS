@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My courses</title>
 
-    <link rel="stylesheet" href="styles.css" />
     <%- include('bootstrap-resources') -%>
   </head>
 
@@ -31,27 +30,29 @@
             <tbody>
               <% Object.values(courses).forEach((course) => { %>
               <tr>
-                <td><%=course["name"]%></td>
-                <td><%=course["period"]%></td>
-                <td><%=course["status"]%></td>
+                <td><%=course["course_name"]%></td>
+                <td><%=course["time_period"]%></td>
+                <td><%=course["grade_state"]%></td>
                 <td>
                   <button
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#gradesModal"
-                    course-id="<%=course["course_id"]%>"
-                    course="<%=course["name"]%>"
-                    period="<%=course["period"]%>"
+                    course-id="<%=course["id"]%>"
+                    period="<%=course["time_period"]%>"
+                    name="<%=course["course_name"]%>"
                     >
                     View my grades
                   </button>
                   <button
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
-                    data-bs-target="#reviewModal"
-                    course-id="<%=course["course_id"]%>"
-                    course="<%=course["name"]%>"
-                    period="<%=course["period"]%>"
+                    data-bs-target="#newReviewModal"
+                    course-id="<%=course["id"]%>"
+                    period="<%=course["time_period"]%>"
+                    name="<%=course["course_name"]%>"
+                    state="<%=course["grade_state"]%>"
+                    instructor-id="<%=course["instructor_id"]%>"
                     >
                     Ask for review
                   </button>
@@ -60,8 +61,8 @@
                     data-bs-toggle="modal"
                     data-bs-target="#statusModal"
                     course-id="<%=course["course_id"]%>"
-                    course="<%=course["name"]%>"
-                    period="<%=course["period"]%>"
+                    course="<%=course["course_name"]%>"
+                    period="<%=course["time_period"]%>"
                     >
                     View review status
                   </button>
@@ -78,7 +79,25 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="modalTitle">
+            <h1 class="modal-title fs-5" id="gradesModalTitle">
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div id="gradesModalBody" class="modal-body">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="newReviewModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="newReviewModalTitle">
             </h1>
             <button
               type="button"
@@ -87,18 +106,24 @@
             ></button>
           </div>
           <div class="modal-body">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <th scope="row">Total</th>
-                  <td>5</td>
-                </tr>
-                <tr>
-                  <th scope="row">Q1</th>
-                  <td>2</td>
-                </tr>
-              </tbody>
-            </table>
+            <h2 id="modalPop" class="fs-5"></h2>
+            <form id="reviewForm" method="POST" action="/student/review-request">
+              <input type="hidden" name="course_name" id="course-name" />
+              <input type="hidden" name="time_period" id="period" />
+              <input type="hidden" name="grade_state" id="state" />
+              <input type="hidden" name="instructor_id" id="instructor_id" />
+              <div class="mb-3">
+                <label class="form-label">Message for the instructor</label>
+                <textarea
+                  name="request_message"
+                  class="form-control"
+                  rows="3"
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-success">
+                Submit grade review request
+              </button>
+            </form>
           </div>
         </div>
       </div>

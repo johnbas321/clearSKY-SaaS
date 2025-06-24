@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import multer from "multer";
 import instructorRoutes from "./routes/instructorRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
 import {
   checkLoggedIn,
   checkNotLoggedIn,
@@ -12,9 +13,11 @@ import {
 } from "./middleware/userHandler.js";
 import { logRequests } from "./middleware/logging.js";
 
-export const AUTH_SERVICE_URL = "http://localhost:3001"; //"http://auth:3001";
-export const GRADES_SERVICE_URL = "http://localhost:3002"; //"http://grading:3002";
-export const USERMAN_SERVICE_URL = "http://localhost:3005"; //"http://userman:3005";
+export const AUTH_SERVICE_URL = "http://localhost:3001"; // "http://auth:3001";
+export const GRADES_SERVICE_URL = "http://localhost:3002"; // "http://grading:3002";
+export const REVIEW_SERVICE_URL = "http://localhost:3003"; // "http://review":3003";
+export const STATS_SERVICE_URL = "http://localhost:3004"; // "http://stats":3003";
+export const USERMAN_SERVICE_URL = "http://localhost:3005"; // "http://userman:3005";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -44,6 +47,7 @@ app.use(
   checkRole("instructor"),
   instructorRoutes
 );
+app.use("/student/", checkLoggedIn, checkRole("student"), studentRoutes);
 
 app.get("/", checkNotLoggedIn, async (req, res) => {
   res.redirect("/login");
@@ -86,6 +90,7 @@ app.get("/gradestatistics", checkLoggedIn, async (req, res) => {
     return;
   }
 
+  console.log(result_json);
   res.render("grade-stats", { user: user, data: result_json });
 });
 
@@ -105,24 +110,6 @@ app.get("/review-requests", async (req, res) => {
     },
   ];
   res.render("review-requests", { user: "Belesis", requests: data });
-});
-
-app.get("/courses", async (req, res) => {
-  const data = [
-    {
-      course_id: 1,
-      name: "Math",
-      period: "June",
-      status: "open",
-    },
-    {
-      review_id: 2,
-      name: "CS",
-      period: "May",
-      status: "closed",
-    },
-  ];
-  res.render("courses", { user: "Belesis", courses: data });
 });
 
 app.post("/login", checkNotLoggedIn, async (req, res) => {
@@ -177,6 +164,46 @@ app.post(
     res.json({ message: "Response successfully saved!" });
   }
 );
+
+app.post("/grade-stats/graph", express.json(), async (req, res) => {
+  const user = {
+    name: req.session.name,
+    email: req.session.email,
+    role: req.session.role,
+  };
+  console.log(req.body);
+
+  const queryParams = new URLSearchParams({
+    course_id: req.body.course_id,
+    time_period: req.body.time_period,
+    grade_state: req.body.final ? "FINAL" : "OPEN",
+  }).toString();
+
+  console.log(`${STATS_SERVICE_URL}/stats?` + queryParams);
+  const result = await fetch(`${STATS_SERVICE_URL}/stats?` + queryParams, {
+    method: "GET",
+    headers: {
+      Cookie: req.headers.cookie || "",
+    },
+  });
+
+  const result_json = await result.json();
+  console.log(result_json);
+  if (!result.ok) {
+    const { message } = result_json;
+    res.render("error", { user: user, error: message });
+    return;
+  }
+
+  // res.render("partials/courses-grades", result_json, (err, html) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return res.status(500).send("Error rendering modal content");
+  //   }
+
+  //   res.send({ html });
+  // });
+});
 
 app.get("/test", async (req, res) => {
   res.render("testpage", { user: "Belesis" });
