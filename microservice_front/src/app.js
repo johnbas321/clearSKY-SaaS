@@ -68,7 +68,6 @@ app.get("/login", checkNotLoggedIn, async (req, res) => {
 //   });
 // });
 
-
 app.get("/logout", checkLoggedIn, async (req, res) => {
   const result = await fetch(`${AUTH_SERVICE_URL}/logout`, {
     method: "POST",
@@ -85,19 +84,19 @@ app.get("/logout", checkLoggedIn, async (req, res) => {
     res.render("error", { user: "", error: message });
     return;
   }
-  req.session.destroy((err) =>{
-    if (err){
+  req.session.destroy((err) => {
+    if (err) {
       console.log(err);
-    } else{
-        res.clearCookie("sessionId", {
-          path: "/",
-          httpOnly: true,
-          secure: true,
-          sameSite: "lax"
-        });
-        res.redirect("/")
+    } else {
+      res.clearCookie("sessionId", {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+      });
+      res.redirect("/");
     }
-  })
+  });
 });
 
 app.get("/gradestatistics", checkLoggedIn, async (req, res) => {
@@ -209,14 +208,14 @@ app.post("/grade-stats/graph", express.json(), async (req, res) => {
     return;
   }
 
-  // res.render("partials/courses-grades", result_json, (err, html) => {
-  //   if (err) {
-  //     console.error(err);
-  //     return res.status(500).send("Error rendering modal content");
-  //   }
+  res.render("partials/stats-graphs", result_json, (err, html) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error rendering modal content");
+    }
 
-  //   res.send({ html });
-  // });
+    res.send({ html });
+  });
 });
 
 app.get("/test", async (req, res) => {

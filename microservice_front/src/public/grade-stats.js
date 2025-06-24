@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .forEach((btn) => {
       btn.addEventListener("click", async () => {
         // Example: set hidden fields in the form from button attributes
-        console.log("reached");
         const id = btn.getAttribute("course-id");
         const period = btn.getAttribute("course-period");
         const final = btn.getAttribute("course-final");
@@ -22,7 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const data = await response.json();
 
-          document.getElementById("gradesModalBody").innerHTML = data.html;
+          console.log(data.html);
+
+          document.getElementById("graphs").innerHTML = data.html;
         } catch (error) {
           alert("Error:", error);
         }
