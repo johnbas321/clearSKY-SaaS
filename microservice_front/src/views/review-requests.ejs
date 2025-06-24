@@ -38,7 +38,7 @@
                     class="btn btn-outline-primary btn-sm review-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#reviewModal"
-                    review-id="<%=request["review_id"]%>"
+                    review-id="<%=request["request_id"]%>"
                     course="<%=request["course_name"]%>"
                     period="<%=request["time_period"]%>"
                     student="<%=request["student_name"]%>"
@@ -71,6 +71,10 @@
             <h2 id="modalPop" class="fs-5"></h2>
             <form id="reviewForm">
               <input type="hidden" name="reviewID" id="reviewID" />
+              <div class="form-floating mb-3">
+                <textarea class="form-control" id="studentMessage" style="height: 100px" disabled></textarea>
+                <label for="studentMessage">Student message</label>
+              </div>
               <div class="mb-3">
                 <label class="form-label">Action</label>
                 <select name="action" class="form-select" required>

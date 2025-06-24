@@ -1,42 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll("[review-id]").forEach(function (element) {
-    element.addEventListener("click", async () => {
-      try {
-        const response = await fetch(
-          `/instructor/review-requests/student-message`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              course_id: id,
-              time_period: period,
-              final: final,
-            }),
-          }
-        );
+  document
+    .querySelectorAll('.btn[data-bs-target="#reviewModal"]')
+    .forEach((element) => {
+      element.addEventListener("click", async () => {
+        document.getElementById("reviewID").value =
+          element.getAttribute("review-id");
 
-        const data = await response.json();
+        document.getElementById(
+          "modalPop"
+        ).textContent = `${element.getAttribute(
+          "course"
+        )} | ${element.getAttribute("period")} | ${element.getAttribute(
+          "student"
+        )}`;
+        try {
+          const response = await fetch(
+            `/instructor/review-requests/student-message`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                review_id: element.getAttribute("review-id"),
+              }),
+            }
+          );
 
-        // Populate modal content
-        document.getElementById("parsingModalBody").innerHTML = data.html;
+          const data = await response.json();
 
-        // Show Bootstrap modal
-        const modal = new bootstrap.Modal(
-          document.getElementById("parsingModal")
-        );
-        modal.show();
-      } catch (error) {
-        alert("Error:", error);
-      }
+          console.log(data);
 
-      document.getElementById("reviewID").value =
-        this.getAttribute("review-id");
+          document.getElementById("studentMessage").innerHTML = data.message;
+          // Populate modal content
+          // document.getElementById("parsingModalBody").innerHTML = data.html;
 
-      document.getElementById("modalPop").textContent = `${this.getAttribute(
-        "course"
-      )} | ${this.getAttribute("period")} | ${this.getAttribute("student")}`;
+          // Show Bootstrap modal
+          // const modal = new bootstrap.Modal(
+          //   document.getElementById("parsingModal")
+          // );
+          // modal.show();
+        } catch (error) {
+          alert("Error:", error);
+        }
+      });
     });
-  });
 });
 
 document.getElementById("reviewForm").addEventListener("submit", function (e) {

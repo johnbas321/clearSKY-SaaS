@@ -97,24 +97,40 @@ router.get("/review-requests", async (req, res) => {
     return;
   }
 
-  res.render("review-requests", { user: user, requests: result_json }); // const data = [
-  //   {
-  //     review_id: 1,
-  //     course_name: "Math",
-  //     period: "June",
-  //     student: "Mpelesis",
-  //   },
-  //   {
-  //     review_id: 2,
-  //     course_name: "CS",
-  //     period: "May",
-  //     student: "Bazdekis",
-  //   },
-  // ];
-  // res.render("review-requests", { user: "Belesis", requests: data });
+  res.render("review-requests", { user: user, requests: result_json });
 });
 
-router.get("review_requests/student-message", async (req, res) => {});
+router.post(
+  "/review-requests/student-message",
+  express.json(),
+  async (req, res) => {
+    console.log(req.body);
+    const user = {
+      name: req.session.name,
+      email: req.session.email,
+      role: req.session.role,
+    };
+    const result = await fetch(
+      `${REVIEW_SERVICE_URL}/reviews/request/${req.body.review_id}/message`,
+      {
+        method: "GET",
+        headers: {
+          Cookie: req.headers.cookie || "",
+        },
+      }
+    );
+
+    const result_json = await result.json();
+    console.log(result_json);
+    if (!result.ok) {
+      const { message } = result_json;
+      res.render("error", { user: user, error: message });
+      return;
+    }
+
+    res.send({ message: result_json });
+  }
+);
 
 router.post("/upload-init-confirm", express.json(), async (req, res) => {
   const result = await fetch(
