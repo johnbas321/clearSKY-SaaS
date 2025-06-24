@@ -57,15 +57,47 @@ app.get("/login", checkNotLoggedIn, async (req, res) => {
   res.render("index", { user: "" });
 });
 
+// app.get("/logout", checkLoggedIn, async (req, res) => {
+//   // check tou basdeki oti epistrefei http 200 kai epistrefw me empty cookie
+//   req.session.destroy((err) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       res.redirect("/login");
+//     }
+//   });
+// });
+
+
 app.get("/logout", checkLoggedIn, async (req, res) => {
-  // check tou basdeki oti epistrefei http 200 kai epistrefw me empty cookie
-  req.session.destroy((err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.redirect("/login");
-    }
+  const result = await fetch(`${AUTH_SERVICE_URL}/logout`, {
+    method: "POST",
+    headers: {
+      Cookie: req.headers.cookie || "",
+    },
+    // To include cookies from the auth service in the response:
+    credentials: "include",
   });
+
+  const result_json = await result.json();
+  if (!result.ok) {
+    const { message } = result_json;
+    res.render("error", { user: "", error: message });
+    return;
+  }
+  req.session.destroy((err) =>{
+    if (err){
+      console.log(err);
+    } else{
+        res.clearCookie("sessionId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax"
+        });
+        res.redirect("/")
+    }
+  })
 });
 
 app.get("/gradestatistics", checkLoggedIn, async (req, res) => {

@@ -66,6 +66,16 @@
                     >
                     View review status
                   </button>
+                  <button
+                    class="btn btn-outline-primary btn-sm review-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#graphModal"
+                    course-id="<%=course["course_id"]%>"
+                    course="<%=course["course_name"]%>"
+                    period="<%=course["time_period"]%>"
+                    >
+                    View course stats
+                  </button>
                 </td>
               </tr>
               <% }); %>
