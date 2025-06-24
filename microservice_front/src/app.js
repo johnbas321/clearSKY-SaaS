@@ -13,10 +13,10 @@ import {
 } from "./middleware/userHandler.js";
 import { logRequests } from "./middleware/logging.js";
 
-export const AUTH_SERVICE_URL = "http://auth:3001"; //"http://localhost:3001"; // "http://auth:3001";
+export const AUTH_SERVICE_URL = "http://auth:3001"; //"http://auth:3001"; //"http://localhost:3001"; // "http://auth:3001";
 export const GRADES_SERVICE_URL = "http://grading:3002"; // "http://localhost:3002"; // "http://grading:3002";
 export const REVIEW_SERVICE_URL = "http://review:3003"; //"http://localhost:3003"; // "http://review":3003";
-export const STATS_SERVICE_URL = "http://stats:3003"; //"http://localhost:3004"; // "http://stats":3003";
+export const STATS_SERVICE_URL = "http://stats:3004"; //"http://localhost:3004"; // "http://stats":3003";
 export const USERMAN_SERVICE_URL = "http://userman:3005"; //"http://localhost:3005"; // "http://userman:3005";
 
 const upload = multer({ storage: multer.memoryStorage() });
