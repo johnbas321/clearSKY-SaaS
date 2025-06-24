@@ -2,10 +2,10 @@ import { UsageError } from '../errors/usageError.js';
 import { Request } from '../models/Request.js';
 import { Reply } from '../models/Reply.js';
 
-export async function viewRequestStatus(request_id) {
+export async function viewRequestStatus(course_name, time_period, student_id) {
     let reply = {}
     try {
-        const request = await Request.findById(request_id);
+        const request = await Request.findByCourseAndStudent(course_name, time_period, student_id);
         if (!request){
             throw new Error('Review request does not exist');
         }
