@@ -146,13 +146,13 @@ router.post("/review-status", express.json(), async (req, res) => {
     return;
   }
 
-  // res.render("partials/courses-grades", result_json, (err, html) => {
-  //   if (err) {
-  //     console.error(err);
-  //     return res.status(500).send("Error rendering modal content");
-  //   }
+  res.render("partials/statusModal", result_json, (err, html) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error rendering modal content");
+    }
 
-  //   res.send({ html });
-  // });
+    res.send({ html });
+  });
 });
 export default router;

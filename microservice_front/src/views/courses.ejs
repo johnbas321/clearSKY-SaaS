@@ -61,6 +61,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#statusModal"
                     course-id="<%=course["id"]%>"
+                    name="<%=course["course_name"]%>"
                     course="<%=course["course_name"]%>"
                     period="<%=course["time_period"]%>"
                     >
@@ -177,25 +178,7 @@
               data-bs-dismiss="modal"
             ></button>
           </div>
-          <div class="modal-body">
-            <!-- <h2 id="modalPop" class="fs-5"></h2>
-            <form id="reviewForm" method="POST" action="/student/review-request">
-              <input type="hidden" name="course_name" id="course-name" />
-              <input type="hidden" name="time_period" id="period" />
-              <input type="hidden" name="grade_state" id="state" />
-              <input type="hidden" name="instructor_id" id="instructor_id" />
-              <div class="mb-3">
-                <label class="form-label">Message for the instructor</label>
-                <textarea
-                  name="request_message"
-                  class="form-control"
-                  rows="3"
-                ></textarea>
-              </div>
-              <button type="submit" class="btn btn-success">
-                Submit grade review request
-              </button>
-            </form> -->
+          <div class="modal-body" id="statusModalBody">
           </div>
         </div>
       </div>

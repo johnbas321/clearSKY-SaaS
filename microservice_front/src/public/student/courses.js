@@ -62,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }),
           });
 
-          console.log("3");
           const data = await response.json();
 
+          console.log(data);
           document.getElementById("statusModalBody").innerHTML = data.html;
         } catch (error) {
           alert("Error:", error);
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const period = btn.getAttribute("period");
         const grade_state = btn.getAttribute("course-final");
         const final = grade_state === "FINAL" ? true : false;
-                try {
+        try {
           const response = await fetch(`/grade-stats/graph`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -163,9 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-function renderAllCharts(){
-   document.querySelectorAll('.grade-chart').forEach((canvas) => {
+function renderAllCharts() {
+  document.querySelectorAll(".grade-chart").forEach((canvas) => {
     const raw = canvas.dataset.chart;
     const label = canvas.dataset.label;
 
@@ -173,16 +172,18 @@ function renderAllCharts(){
       const data = JSON.parse(raw);
 
       new Chart(canvas, {
-        type: 'bar',
+        type: "bar",
         data: {
           labels: Object.keys(data),
-          datasets: [{
-            label: label === 'total' ? 'Total Distribution' : label,
-            data: Object.values(data),
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-          }]
+          datasets: [
+            {
+              label: label === "total" ? "Total Distribution" : label,
+              data: Object.values(data),
+              backgroundColor: "rgba(54, 162, 235, 0.5)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+          ],
         },
         options: {
           responsive: true,
