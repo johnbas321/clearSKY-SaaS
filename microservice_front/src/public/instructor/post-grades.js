@@ -1,7 +1,7 @@
 let formData = new FormData();
 
 let gradesState;
-if ((window.state = "initial")) {
+if (window.state === "initial") {
   gradesState = "init";
 } else {
   gradesState = "final";
@@ -49,16 +49,6 @@ document.getElementById("confirmBtn").addEventListener("click", async () => {
         cache_id: document.querySelector("#parsingModalBody input").value,
       }),
     });
-    // axios
-    //   .post("/instructor/upload-init-confirm", {
-    //     cache_id: document.querySelector("#parsingModalBody input").value,
-    //   })
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
 
     const result = await res.json();
     alert(result.message);

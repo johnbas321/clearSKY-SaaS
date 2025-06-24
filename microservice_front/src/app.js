@@ -94,24 +94,6 @@ app.get("/gradestatistics", checkLoggedIn, async (req, res) => {
   res.render("grade-stats", { user: user, data: result_json });
 });
 
-app.get("/review-requests", async (req, res) => {
-  const data = [
-    {
-      review_id: 1,
-      course_name: "Math",
-      period: "June",
-      student: "Mpelesis",
-    },
-    {
-      review_id: 2,
-      course_name: "CS",
-      period: "May",
-      student: "Bazdekis",
-    },
-  ];
-  res.render("review-requests", { user: "Belesis", requests: data });
-});
-
 app.post("/login", checkNotLoggedIn, async (req, res) => {
   const result = await fetch(`${AUTH_SERVICE_URL}/login`, {
     method: "POST",

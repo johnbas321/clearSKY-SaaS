@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { GRADES_SERVICE_URL } from "../app.js";
+import { GRADES_SERVICE_URL, REVIEW_SERVICE_URL } from "../app.js";
 import FormData from "form-data";
 import axios from "axios";
 
@@ -75,6 +75,46 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       });
   });
 });
+
+router.get("/review-requests", async (req, res) => {
+  const user = {
+    name: req.session.name,
+    email: req.session.email,
+    role: req.session.role,
+  };
+  const result = await fetch(`${REVIEW_SERVICE_URL}/reviews/pending-requests`, {
+    method: "GET",
+    headers: {
+      Cookie: req.headers.cookie || "",
+    },
+  });
+
+  const result_json = await result.json();
+  console.log(result_json);
+  if (!result.ok) {
+    const { message } = result_json;
+    res.render("error", { user: user, error: message });
+    return;
+  }
+
+  res.render("review-requests", { user: user, requests: result_json }); // const data = [
+  //   {
+  //     review_id: 1,
+  //     course_name: "Math",
+  //     period: "June",
+  //     student: "Mpelesis",
+  //   },
+  //   {
+  //     review_id: 2,
+  //     course_name: "CS",
+  //     period: "May",
+  //     student: "Bazdekis",
+  //   },
+  // ];
+  // res.render("review-requests", { user: "Belesis", requests: data });
+});
+
+router.get("review_requests/student-message", async (req, res) => {});
 
 router.post("/upload-init-confirm", express.json(), async (req, res) => {
   const result = await fetch(

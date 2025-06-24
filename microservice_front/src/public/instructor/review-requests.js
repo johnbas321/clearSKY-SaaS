@@ -1,6 +1,34 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("[review-id]").forEach(function (element) {
-    element.addEventListener("click", function () {
+    element.addEventListener("click", async () => {
+      try {
+        const response = await fetch(
+          `/instructor/review-requests/student-message`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course_id: id,
+              time_period: period,
+              final: final,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        // Populate modal content
+        document.getElementById("parsingModalBody").innerHTML = data.html;
+
+        // Show Bootstrap modal
+        const modal = new bootstrap.Modal(
+          document.getElementById("parsingModal")
+        );
+        modal.show();
+      } catch (error) {
+        alert("Error:", error);
+      }
+
       document.getElementById("reviewID").value =
         this.getAttribute("review-id");
 
