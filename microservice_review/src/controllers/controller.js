@@ -37,12 +37,13 @@ export async function viewStatus(req, res, next){
     if (req.user.role !== 'student') {
       throw new UsageError('Only students can view their review status', 403);
     }
-    if (!req.params){
-      throw new UsageError('No information provided', 400)
+
+    const { course_name, time_period } = req.query;
+    if (!course_name || !time_period ){
+      throw new UsageError('Request is missing important information', 400)
     }
 
-    const request_id = req.params.request_id;
-    const reply = await viewRequestStatus(request_id);
+    const reply = await viewRequestStatus(course_name, time_period, student_id);
     res.status(200).json(reply);
 
   } catch(err){

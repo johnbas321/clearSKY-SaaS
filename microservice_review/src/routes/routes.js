@@ -20,7 +20,7 @@ router
 .all(methodNotAllowed);
 
 router
-.route("/status/:request_id")
+.route("/status")
 .get(controllers.viewStatus)
 .all(methodNotAllowed);
 
