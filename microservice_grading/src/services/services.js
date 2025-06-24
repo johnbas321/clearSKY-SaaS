@@ -39,6 +39,7 @@ export async function getGradesPerCourse(student_id, course_id, time_period) {
 }
 
 export async function getGradesForStatistics(course_id, time_period, is_final) {
+    const is_final_int = is_final? 1 : 0;
     const query = `
         SELECT
             grade,
@@ -46,7 +47,7 @@ export async function getGradesForStatistics(course_id, time_period, is_final) {
         FROM grades WHERE course_id = ? AND time_period = ? AND is_final = ?
     `
     try {
-        const result = await executeQuery(query,[course_id, time_period, is_final]);
+        const result = await executeQuery(query,[course_id, time_period, is_final_int]);
         console.log(result)
         if (result.length > 0){
             const transformed = result.map(row => {

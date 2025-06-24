@@ -167,7 +167,7 @@ export async function confirmFinalUpload(req, res, next) {
     const { course_id, course_name, time_period, grades } = data;
 
     if (!await Course.canUploadFinalGrades(course_name, time_period)){
-      throw new UsageError('You need to upload inital grades first;', 404);
+      throw new UsageError('Can not upload final grades;', 404);
     }
 
     await Promise.all(grades.map(async g => {
@@ -193,7 +193,7 @@ export async function confirmFinalUpload(req, res, next) {
 
     gradeCache.del(cache_id);
 
-    await Course.create({ id: course_id, course_name, instructor_id: user_id, time_period, grade_state: "FINAL" });
+    await Course.updateState(course_name, time_period);
 
     res.status(201).json({
       message: "Final grades uploaded successfully"
