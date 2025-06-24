@@ -64,7 +64,9 @@ export class Grade {
 
     static async aggregateGrades(course_id, time_period, is_final){
         const total_questions =  parseInt(await Grade.findTotalQuestion(course_id, time_period));
-        const is_final_int = is_final ? 1 : 0;
+        //i love js!
+        const is_final_bool = is_final ==='true' ? true : false;
+        const is_final_int = is_final_bool ? 1 : 0;
         if(!total_questions){
             throw new Error('No grade found');
         }
