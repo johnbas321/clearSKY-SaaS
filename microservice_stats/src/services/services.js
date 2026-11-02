@@ -10,7 +10,7 @@ export async function fetchStatsFromGrades(course_id, time_period, grade_state) 
     try {
         const response = await fetch(`http://grading:3002/grades/internal/grades/stats?${queryParams}`, {
             method: 'GET',
-            headers: { 'x-internal-token': process.env.INTERNAL_API_TOKEN || "prod123#"}
+            headers: { 'x-internal-token': process.env.INTERNAL_API_TOKEN}
         });
         const result = await response.json();
         if (!response.ok){
